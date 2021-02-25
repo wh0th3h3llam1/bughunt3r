@@ -1,0 +1,297 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/test.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'semantic/semantic.min.css' %}">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.8.7/semantic.min.js"></script>
+</head>
+
+<body>
+
+	<nav class="ui borderless menu">
+		<div class="header item">
+			<img class="logo" src="" alt="logo">
+			<div class="company">Company Name</div>
+		</div>
+		<!-- end left menu -->
+
+	</nav>
+	<!-- end navbar -->
+
+	<!-- end description -->
+
+	<div class="ui container">
+		<div class="ui styled accordion" id="filter">
+			<div class="title">
+				<i class="dropdown icon"></i>
+				Filter
+			</div>
+			<div class="content">
+				<div class="ui grid">
+					<div class="four wide column" id="radio">
+						<div class="ui form">
+							<div class="grouped fields">
+								<div class="field">
+									<div class="ui radio checkbox">
+										<input type="radio" name="size" value="small">
+										<label>Small</label>
+									</div>
+								</div>
+								<div class="field">
+									<div class="ui radio checkbox">
+										<input type="radio" name="size" value="medium">
+										<label>Medium</label>
+									</div>
+								</div>
+								<div class="field">
+									<div class="ui radio checkbox">
+										<input type="radio" name="size" value="large">
+										<label>Large</label>
+									</div>
+								</div>
+								<div class="field">
+									<div class="ui radio checkbox">
+										<input type="radio" name="size" value="x-large">
+										<label>X-Large</label>
+									</div>
+								</div>
+							</div>
+							<!-- end grouped fields -->
+						</div>
+						<!-- end form -->
+					</div>
+					<!-- end radio -->
+					<div class="four wide column" id="checkbox">
+						<div class="ui form">
+							<div class="grouped fields">
+								<div class="field">
+									<div class="ui checkbox">
+										<input type="checkbox" name="small">
+										<label>Red</label>
+									</div>
+								</div>
+								<div class="field">
+									<div class="ui checkbox">
+										<input type="checkbox" name="medium">
+										<label>Orange</label>
+									</div>
+								</div>
+								<div class="field">
+									<div class="ui checkbox">
+										<input type="checkbox" name="large">
+										<label>Green</label>
+									</div>
+								</div>
+								<div class="field">
+									<div class="ui checkbox">
+										<input type="checkbox" name="x-large">
+										<label>Blue</label>
+									</div>
+								</div>
+							</div>
+							<!-- end grouped fields -->
+						</div>
+						<!-- end form -->
+					</div>
+					<!-- end checkbox -->
+					<div class="eight wide column" id="input">
+						<div class="ui form">
+							<div class="grouped fields">
+								<div class="field">
+									<div class="ui labeled input">
+										<div class="ui label">
+											Name
+										</div>
+										<input type="text" placeholder="your name">
+									</div>
+								</div>
+								<div class="field">
+									<div class="ui selection dropdown">
+										<input type="hidden" name="gender">
+										<i class="dropdown icon"></i>
+										<div class="default text">Gender</div>
+										<div class="menu">
+											<div class="item" data-value="1">Male</div>
+											<div class="item" data-value="0">Female</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- end grouped fields -->
+						</div>
+						<!-- end form -->
+					</div>
+					<!-- end input -->
+				</div>
+				<!-- end grid -->
+			</div>
+			<!-- end content -->
+		</div>
+		<!-- end accordion -->
+
+		<table class="ui blue celled striped compact table">
+			<thead>
+				<tr>
+					<th class="collapsing">No</th>
+					<th>Food</th>
+					<th>Code</th>
+					<th>Calories</th>
+					<th>Protein</th>
+					<th class="center aligned collapsing">Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="collapsing">1</td>
+					<td>Apples</td>
+					<td>Ap</td>
+					<td>200</td>
+					<td>0g</td>
+					<td class="center aligned">
+						<i class="large green checkmark icon"></i>
+					</td>
+				</tr>
+				<tr>
+					<td class="collapsing">2</td>
+					<td>Orange</td>
+					<td>Or</td>
+					<td>310</td>
+					<td>0g</td>
+					<td class="center aligned">
+						<i class="large red close icon"></i>
+					</td>
+				</tr>
+				<tr>
+					<td class="collapsing">3</td>
+					<td>Mango</td>
+					<td>Mg</td>
+					<td>360</td>
+					<td>0g</td>
+					<td class="center aligned">
+						<i class="large green checkmark icon"></i>
+					</td>
+				</tr>
+				<tr>
+					<td class="collapsing">4</td>
+					<td>Grape</td>
+					<td>Gr</td>
+					<td>210</td>
+					<td>0g</td>
+					<td class="center aligned">
+						<i class="large green checkmark icon"></i>
+					</td>
+				</tr>
+				<tr>
+					<td class="collapsing">4</td>
+					<td>Grape</td>
+					<td>Gr</td>
+					<td>210</td>
+					<td>0g</td>
+					<td class="center aligned">
+						<i class="large green checkmark icon"></i>
+					</td>
+				</tr>
+				<tr>
+					<td class="collapsing">4</td>
+					<td>Grape</td>
+					<td>Gr</td>
+					<td>210</td>
+					<td>0g</td>
+					<td class="center aligned">
+						<i class="large green checkmark icon"></i>
+					</td>
+				</tr>
+				<tr>
+					<td class="collapsing">4</td>
+					<td>Grape</td>
+					<td>Gr</td>
+					<td>210</td>
+					<td>0g</td>
+					<td class="center aligned">
+						<i class="large green checkmark icon"></i>
+					</td>
+				</tr>
+				<tr>
+					<td class="collapsing">4</td>
+					<td>Grape</td>
+					<td>Gr</td>
+					<td>210</td>
+					<td>0g</td>
+					<td class="center aligned">
+						<i class="large green checkmark icon"></i>
+					</td>
+				</tr>
+				<tr>
+					<td class="collapsing">4</td>
+					<td>Grape</td>
+					<td>Gr</td>
+					<td>210</td>
+					<td>0g</td>
+					<td class="center aligned">
+						<i class="large green checkmark icon"></i>
+					</td>
+				</tr>
+				<tr>
+					<td class="collapsing">4</td>
+					<td>Grape</td>
+					<td>Gr</td>
+					<td>210</td>
+					<td>0g</td>
+					<td class="center aligned">
+						<i class="large green checkmark icon"></i>
+					</td>
+				</tr>
+				<tr>
+					<td class="collapsing">4</td>
+					<td>Grape</td>
+					<td>Gr</td>
+					<td>210</td>
+					<td>0g</td>
+					<td class="center aligned">
+						<i class="large green checkmark icon"></i>
+					</td>
+				</tr>
+				<tr>
+					<td class="collapsing">4</td>
+					<td>Grape</td>
+					<td>Gr</td>
+					<td>210</td>
+					<td>0g</td>
+					<td class="center aligned">
+						<i class="large green checkmark icon"></i>
+					</td>
+				</tr>
+				<tr>
+					<td class="collapsing">4</td>
+					<td>Grape</td>
+					<td>Gr</td>
+					<td>210</td>
+					<td>0g</td>
+					<td class="center aligned">
+						<i class="large green checkmark icon"></i>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- end table -->
+	</div>
+	<!-- end container -->
+
+	<footer class="footer">
+		Hello
+		Micro Tech 2015. All Rights Reserved
+	</footer>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('.ui.accordion').accordion();
+		})
+	  </script>
+</body>
+
+</html>

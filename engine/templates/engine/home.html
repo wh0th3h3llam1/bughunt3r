@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		{% block title %}
+			<title>Home</title>
+		{% endblock %}
+	</head>
+
+	<body>
+
+		{% block main %}
+			<main class="ui container center">
+				<br>
+				<h1 class="ui header">bughunt3r</h1>
+
+				{% if last_result %}
+					<div class="ui raised {{ colors | random }} segment">
+						<h2 class="ui header">Last Scan</h2>
+						<a href="{% url 'results' last_result.timestamp %}">
+							<div>
+								<b>Domain: </b> {{ last_result.domain }}
+								<br>
+								<b>Performed on:</b> {{ last_result.dt }}
+							</div>
+						</a>
+					</div>
+					
+				{% endif %}
+			</main>
+		{% endblock %}
+	</body>
+
+</html>

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		{% block title %}
+		<title>All Results</title>
+		{% endblock %}
+
+		<script src="{% static 'js/copy_to_clip.js' %}"></script>
+	</head>
+
+	<body>
+
+		{% block main %}
+			<main class="ui container">
+				<br>
+				<h1 class="ui header center">All Results</h1>
+				<br>
+				
+				{% if all_results %}
+				<div class="ui raised {{ colors | random }} segment">
+						{% for res in all_results %}
+							<a href="{% url 'results' res.id %}">
+								<div class="ui middle aligned selection animated list">
+									<div class="item">
+										<div class="right floated content">
+											<button class="ui red button">
+												Delete
+											</button>
+										</div>
+										<div class="content">
+											<div class="header">
+												<h3>{{ res.domain | default:"Error, Please Delete this" }}</h3>
+											</div>
+											<b>Performed On: </b>{{ res.dt }}
+										</div>
+									</div>
+								</div>
+							</a>
+							<br>
+						{% endfor %}
+					</div>
+					<br>
+				{% else %}
+					<div class="ui placeholder segment">
+						<div class="ui icon header">
+						<i class="searchengin icon"></i>
+						No Results Found
+						</div>
+						<button class="ui primary button" onclick="location.href='{% url 'subdomain-enum' %}'">
+							Scan Now
+						</button>
+					</div>
+				{% endif %}
+			</main>
+		{% endblock %}
+	</body>
+
+</html>

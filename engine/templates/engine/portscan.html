@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		{% block title %}
+			<title>Port Scan</title>
+		{% endblock %}
+	</head>
+
+	<body>
+
+		{% block main %}
+			<main class="ui container">
+				<br>
+				<h1 style="text-align: center;">Port Scan</h1>
+				<br>
+				<form class="ui form" action="" method="POST">
+					{% csrf_token %}
+					<div class="field">
+						<label>Port Range</label>
+						<input placeholder="1-1024" id="url" name="url" type="text" required>
+					</div>
+					<!-- <div class="ui submit button">Submit</div> -->
+					<!-- <input type="submit" value="Scan" id="btn" class="ui button" onclick="onSubmit()"> -->
+					
+					<div class="ui animated submit button" tabindex="0">
+						<!-- <input type="submit" class="ui animated button" tabindex="0"> -->
+						<div class="visible content">Scan</div>
+						<div class="hidden content">
+							<i class="right arrow icon"></i>
+						</div>
+					</div>
+				</form>
+				<br><br>
+			</main>
+		{% endblock %}
+	</body>
+
+</html>

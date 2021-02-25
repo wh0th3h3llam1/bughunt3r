@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		{% block title %}
+			<title>Subdomain Enumeration</title>
+		{% endblock %}
+
+	</head>
+
+	<body>
+
+		{% block main %}
+			<main class="ui container">
+				<br>
+				<h1 class="ui header center">Subdomain Enumeration</h1>
+				<br>
+				<div>
+					
+					<form class="ui form" action="{% url 'results' %}" method="POST">
+						{% csrf_token %}
+						<div class="field">
+							<label>Domain</label>
+
+							<input placeholder="Domain.com" id="url" name="url" type="text" value="djangoproject.com">
+						</div>
+						<!-- <div class="ui submit button">Submit</div> -->
+						<!-- <input type="submit" value="Find Subdomains" id="btn" class="ui button" onclick="onSubmit(event)"> -->
+						
+						{% comment %}
+						<div class="ui animated submit button" tabindex="0">
+							<div class="visible content">Find Subdomains</div>
+							<div class="hidden content">
+								<i class="right arrow icon"></i>
+							</div>
+						</div>
+						{% endcomment %}
+						{% comment %}
+							
+						<div class="field">
+							<label>Tool To Use</label>
+							<div class="ui selection dropdown" onload="$('.selection.dropdown').dropdown();">
+								<input type="hidden" name="gender">
+								<i class="dropdown icon"></i>
+								<!-- <div class="default text">sublist3r</div> -->
+								<select class="menu">
+									<option class="item" data-value="0">sublist3r</option>
+									<option class="item" data-value="1">subfinder</option>
+									<option class="item" data-value="2">amass</option>
+									<option class="item" data-value="3">knockpy</option>
+									<option class="item" data-value="4">findomain</option>
+								</select>
+							</div>
+						</div>
+						
+						{% endcomment %}
+
+						<div class="field">
+							<label>Tool To Use</label>
+							<select class="ui search dropdown" name="tool">
+								<option selected value="sublist3r">sublist3r</option>
+								<option value="subfinder">subfinder</option>
+								<option value="amass">amass</option>
+								<option value="knockpy">knockpy</option>
+								<option value="findomain">findomain</option>
+							</select>
+						</div>
+
+						<input type="submit" value="Find Subdomains" id="btn" class="ui primary button" onclick="showToast();">
+					</form>
+					<br><br>
+
+					<h3 class="ui header">
+						Reference:
+					</h3>
+					<a href="https://pentester.land/cheatsheets/2018/11/14/subdomains-enumeration-cheatsheet.html#methods">https://pentester.land/cheatsheets/2018/11/14/subdomains-enumeration-cheatsheet.html#methods</a>
+					<br>
+					<a href="https://www.hackingloops.com/subdomain-discovery-osint-or-bruteforce/">https://www.hackingloops.com/subdomain-discovery-osint-or-bruteforce/</a>
+					
+					{% comment %}
+					<form class="ui form" action="{% url 'find-subdomains' %}" method="POST">
+						<div class="ui labeled input">
+							<div class="ui label">
+								http://
+							</div>
+							<input type="text" id="url" placeholder="example.com">
+								<input type="text" id="url" placeholder="example.com" onkeydown="validateURL()">
+						</div>
+						<input type="submit" value="Find Subdomains" class="ui button">
+					</form>
+					&nbsp;
+					<div class="ui animated button" tabindex="0" onclick="location.href">
+						<div class="visible content">Find Subdomains</div>
+						<div class="hidden content">
+							<i class="right arrow icon"></i>
+						</div>
+					</div>
+						
+					{% endcomment %}
+					
+				</div>
+			</main>
+		{% endblock %}
+	</body>
+
+	<script src="{% static 'jquery/validate_url.js' %}"></script>
+	<script src="{% static 'js/loading.js' %}"></script>
+	<script>
+		
+		$('.selection.dropdown').dropdown();
+
+		function showToast() {
+			$('body')
+			.toast({
+				title: 'Subdomain Scan Started',
+				message: 'It may take a while to run the scan!'
+			});
+		}
+	</script>
+</html>

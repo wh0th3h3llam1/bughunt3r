@@ -1,0 +1,36 @@
+{% load static %}
+{% load startswith %}
+
+<div class="ui pointing huge menu">
+	<div class="header item">
+		Bughunt3r
+	</div>
+	{% url 'home' as hm %}
+	{% url 'subdomain-enum' as se %}
+	{% url 'port-scan' as pos %}
+	{% url 'results' as re %}
+	{% url 'about' as ab %}
+	<a class="{% if request.path == hm %}active{% endif %} item" href="{{ hm }}">
+		Home
+	</a>
+	<a class="{% if request.path == se %}active{% endif %} item" href="{{ se }}">
+		Subdomain Enumeration
+	</a>
+	<a class="{% if request.path == pos %}active{% endif %} item" href="{{ pos }}">
+		Port Scan
+	</a>
+	<a class="{% if request.path|startswith:'/results/' == re %}active{% endif %} item" href="{{ re }}">
+		Results
+	</a>
+	<a class="{% if request.path == ab %}active{% endif %} item" href="{{ ab }}">
+		About
+	</a>
+	<div class="right menu">
+		<div class="ui buttons">
+			<button class="ui button"><i class="adjust icon"></i>Light</button>
+			<div class="or"></div>
+			<button class="ui inverted secondary button"><i class="adjust icon"></i>Dark</button>
+			<!-- <button class="ui basic button"><i class="adjust icon"></i></button> -->
+		</div>
+	</div>
+</div>
