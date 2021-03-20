@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load startswith %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		{% block title %}
+		<title>Port Scan Results</title>
+		{% endblock %}
+
+	</head>
+
+	<body>
+
+		{% block main %}
+			<main class="ui container">
+				<br>
+				<h1 class="ui header center">Port Scan Results</h1>
+				<br>
+
+				<!-- Breadcrumb -->
+				<div class="ui breadcrumb">
+					<a class="section" href="{% url 'results' %}">Results</a>
+					<i class="right angle icon divider"></i>
+					<div class="active section">Port Scan</div>
+					
+				</div>
+				
+				{% if all_results %}
+
+					<div class="ui fluid search">
+						<div class="ui icon input">
+							<input class="prompt" type="text" placeholder="Search Domains...">
+							<i class="search icon"></i>
+						</div>
+						<div class="results"></div>
+					</div>
+
+					<div class="ui raised {{ colors | random }} segment">
+						<h2 class="ui header center">Scan Details</h2>
+						<div>
+							<b>Domain: </b> {{ domain | default:"Error" }}
+							<br>
+							<b>Performed on:</b> {{ dt }}
+							<br>
+							<b>Host Name:</b> {{ size }}
+							<br>
+							<b>Status:</b> {{ size }}
+							<br>
+							<b>Reason:</b> {{ size }}
+							<br>
+							<b>M.A.C Address:</b> {{ active }}
+						</div>
+					</div>
+
+					<h4 class="ui horizontal divider header">
+						<i class="bar chart icon"></i>
+						Scan Results
+					</h4>
+
+					<table class="ui celled {{ colors | random }} sortable table">
+						<thead onclick="$('table').tablesort();">
+							<tr>
+								<th class="center aligned">No.</th>
+								<th class="center aligned">Host Name</th>
+								<th class="center aligned">Port Number</th>
+								<th class="center aligned">Status</th>
+								<th class="center aligned">Service Running</th>
+								<th class="center aligned">Product Running</th>
+								<th class="center aligned">Version</th>
+								<th class="center aligned">Other Info</th>
+								<th class="center aligned">CPE</th>
+								<!-- <th class="center aligned">Port Scan</th> -->
+								<th class="center aligned">Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for i, s in result %}
+								<tr>
+									<td class="center aligned">{{ forloop.counter }}</td>
+									<td class="center aligned" id="{{ forloop.counter }}">
+										<a target="_blank" href="http://{{ i }}">{{ i }}</a>
+									</td>
+									<td class="center aligned">
+										<div class="ui {% if s.status|startswith:'2' %}green{% elif s.status|startswith:'3' %}orange{% elif s.status|startswith:'4' %}red{% else %}yellow{% endif %} circular label">{{ s.status | default:"Unknown" }}</div>
+										<!-- <div class="ui red label">{{ s.msg | default:"Unknown"}}</div> -->
+									</td>
+									<!-- <td class="center aligned">
+										<i class="icon red close"></i>Unknown
+										<div class="ui green label">Green</div>
+									</td> -->
+									<td class="center aligned">
+										<button class="circular small ui icon button" onclick="copyToClip({{ forloop.counter }})" data-tooltip="Copy to Clipboard">
+											<i class="icon clipboard"></i>
+										</button>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					
+					<br>
+					
+					<div class="ui primary animated fade button" tabindex="0">
+						<div class="visible content">Export Scan Result</div>
+						<div class="hidden content" onclick="exportFile({{ id }}, {{ domain }});">
+							<i class="file alternate outline icon"></i>
+						</div>
+					</div>
+					<div class="ui red animated fade button" tabindex="0">
+						<div class="visible content">Delete Scan</div>
+						<div class="hidden content" onclick="showModal();">
+							<i class="trash icon"></i>
+						</div>
+					</div>
+					<br>
+				{% else %}
+					<div class="ui placeholder segment">
+						<div class="ui icon header">
+							<i class="searchengin icon"></i>
+							No Results Found
+						</div>
+						<button class="ui primary button" onclick="location.href='{% url 'port-scan' %}'">Scan Now</button>
+					</div>
+				{% endif %}
+			</main>
+		{% endblock %}
+
+	</body>
+	
+	
+	
+</html>

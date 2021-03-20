@@ -12,6 +12,19 @@
 		{% block title %}
 			<title>Port Scan</title>
 		{% endblock %}
+
+		{% block js %}
+			<script src="{% static 'js/scan_started.js' %}"></script>
+			<script>
+				function show_dropdown() {
+					$('.ui.dropdown').dropdown('show');
+				}
+				// $(document).ready(function (){
+				// 	$('.ui.dropdown').dropdown('show');
+				// });
+			</script>
+		{% endblock %}
+		
 	</head>
 
 	<body>
@@ -21,24 +34,55 @@
 				<br>
 				<h1 style="text-align: center;">Port Scan</h1>
 				<br>
-				<form class="ui form" action="" method="POST">
+				<form class="ui form" action="{% url 'results' %}" method="POST">
 					{% csrf_token %}
-					<div class="field">
-						<label>Port Range</label>
-						<input placeholder="1-1024" id="url" name="url" type="text" required>
-					</div>
-					<!-- <div class="ui submit button">Submit</div> -->
-					<!-- <input type="submit" value="Scan" id="btn" class="ui button" onclick="onSubmit()"> -->
 					
-					<div class="ui animated submit button" tabindex="0">
-						<!-- <input type="submit" class="ui animated button" tabindex="0"> -->
-						<div class="visible content">Scan</div>
-						<div class="hidden content">
-							<i class="right arrow icon"></i>
-						</div>
+					<div class="required field" id="url_field">
+						<label>Domain or I.P. Address</label>
+						<input placeholder="domain.com or 127.0.0.1" id="url" name="url" value="127.0.0.1" type="text">
 					</div>
+
+					<div class="required field" id="port_field">
+						<label>Port Range</label>
+						<input placeholder="1-1024" id="ports" name="ports" value="1-1024" type="text">
+					</div>
+
+					<div class="required field">
+						<label>Tool To Use</label>
+						<select class="ui dropdown" id="tool" name="tool" onclick="show_dropdown();">
+							<option selected value="nmap">nmap</option>
+							<option disabled value="masscan">masscan</option>
+							<option disabled value="rust">rust</option>
+						</select>
+					</div>
+
+					<div class="field">
+						<label>Optional Arguments</label>
+						<input placeholder="[-Po] [-sV] [-Pn] [-A]" id="options" name="options" type="text">
+					</div>
+
+					<input type="hidden" name="scan_type" value="port-scan">
+					<button type="submit" id="btn" class="ui primary button" data-url="{% url 'results' %}" onclick="portScanStarted(event);">Scan Ports</button>
+
 				</form>
+
 				<br><br>
+
+				<div>
+					<h3 class="ui header">Reference:</h3>
+					<a target="_blank" href="https://www.fullstackpython.com/monitoring.html">https://www.fullstackpython.com/monitoring.html</a>
+					<br>
+					<a target="_blank" href="https://linuxhint.com/nmap_alternatives/">https://linuxhint.com/nmap_alternatives/</a>
+					<br>
+					<a target="_blank" href="https://www.studytonight.com/network-programming-in-python/integrating-port-scanner-with-nmap">https://www.studytonight.com/network-programming-in-python/integrating-port-scanner-with-nmap</a>
+					<br>
+					<a target="_blank" href="https://simpleisbetterthancomplex.com/tutorial/2016/08/29/how-to-work-with-ajax-request-with-django.html">how-to-work-with-ajax-request-with-django</a>
+					<br>
+					<a target="_blank" href="https://github.com/JustAnotherPythonProgrammer/PenetrationTesting/blob/main/EnumerateDevice.py">Use RustScan in Python</a>
+					<br>
+					<h3 class="ui header">Tools Suggested:</h3>
+					eyewitness, rust, threader
+				</div>
 			</main>
 		{% endblock %}
 	</body>

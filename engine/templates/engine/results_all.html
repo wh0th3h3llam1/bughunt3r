@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		{% block title %}
+		<title>All Results</title>
+		{% endblock %}
+
+		{% block js %}
+			<script src="{% static 'js/scan_started.js' %}"></script>
+		{% endblock %}
+
+	</head>
+
+	<body>
+
+		{% block main %}
+			<main class="ui container">
+				<br>
+				<h1 class="ui header center">All Results</h1>
+				<br>
+
+				<!-- Breadcrumb -->
+				<div class="ui breadcrumb">
+					<a class="section" href="{% url 'results' %}">Results</a>
+					<i class="right angle icon divider"></i>
+					<div class="active section">All Results</div>
+				</div>
+				
+				{% if all_results %}
+					<br>
+					<div class="ui raised {{ colors | random }} segment">
+						{% for res in all_results %}
+							<a href="{% url 'results' res.type res.id %}">
+								<div class="ui middle aligned selection animated list">
+									<div class="item">
+										
+										<div class="right floated content">
+											<!-- <i>Type: </i> {{ res.type }} -->
+											{% if res.type == "subdomain-enum" %}
+												<div class="ui blue horizontal label">
+													Subdomain Enumeration
+												</div>
+											{% else %}
+												<div class="ui red horizontal label">
+													Port Scan
+												</div>
+											{% endif %}
+										</div>
+										<!-- <div class="ui {{ colors | random }} horizontal label">{{ res.tool }}</div> -->
+										<div class="content">
+											<div class="header">
+												<h3>{{ res.domain | default:"Error, Please Delete this" }}</h3>
+											</div>
+											<b>Performed On: </b>{{ res.dt }}
+										</div>
+									</div>
+								</div>
+							</a>
+							<br>
+						{% endfor %}
+					</div>
+					<br>
+
+				<!-- If No Result found for given id -->
+				{% else %}
+					<div class="ui placeholder segment">
+						<div class="ui icon header">
+						<i class="searchengin icon"></i>
+						No Results Found
+						</div>
+						<div class="inline">
+							<div class="ui primary animated button" tabindex="0">
+								<div class="visible content">Scan Subdomain</div>
+								<div class="hidden content" onclick="location.href='{% url 'subdomain-enum' %}'">
+									<i class="right arrow icon"></i>
+								</div>
+							</div>
+						</div>
+						&nbsp;
+						<div class="ui primary animated button" tabindex="0">
+							<div class="visible content">Scan Ports</div>
+							<div class="hidden content" onclick="location.href='{% url 'port-scan' %}'">
+								<i class="right arrow icon"></i>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+			</main>
+		{% endblock %}	
+	</body>
+</html>

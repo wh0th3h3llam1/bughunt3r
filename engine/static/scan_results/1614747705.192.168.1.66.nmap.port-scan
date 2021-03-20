@@ -1,0 +1,61 @@
+{
+	"nmap": {
+		"command_line": "nmap -oX - -p 1-170 -sV 192.168.1.66",
+		"scaninfo": {
+			"tcp": {
+				"method": "syn",
+				"services": "1-170"
+			}
+		},
+		"scanstats": {
+			"timestr": "Wed Mar 03 10:31:59 2021",
+			"elapsed": "13.37",
+			"uphosts": "1",
+			"downhosts": "0",
+			"totalhosts": "1"
+		}
+	},
+	"scan": {
+		"192.168.1.66": {
+			"hostnames": [
+				{
+					"name": "blackvirus.myddns.me",
+					"type": "PTR"
+				}
+			],
+			"addresses": {
+				"ipv4": "192.168.1.66",
+				"mac": "20:89:84:E9:C2:75"
+			},
+			"vendor": {
+				"20:89:84:E9:C2:75": "Compal Information (kunshan)"
+			},
+			"status": {
+				"state": "up",
+				"reason": "arp-response"
+			},
+			"tcp": {
+				"80": {
+					"state": "open",
+					"reason": "syn-ack",
+					"name": "http",
+					"product": "Apache httpd",
+					"version": "",
+					"extrainfo": "",
+					"conf": "10",
+					"cpe": "cpe:/a:apache:http_server"
+				},
+				"169": {
+					"state": "open",
+					"reason": "syn-ack",
+					"name": "ssh",
+					"product": "OpenSSH",
+					"version": "8.2p1 Ubuntu 4ubuntu0.1",
+					"extrainfo": "Ubuntu Linux; protocol 2.0",
+					"conf": "10",
+					"cpe": "cpe:/o:linux:linux_kernel"
+				}
+			}
+		}
+	}
+}

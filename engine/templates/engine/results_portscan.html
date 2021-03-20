@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load startswith %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		{% block title %}
+		<title>Port Scan Results</title>
+		{% endblock %}
+
+	</head>
+
+	<body>
+
+		{% block main %}
+			<main class="ui container">
+				<br>
+				<h1 class="ui header center">Port Scan Results</h1>
+				<br>
+
+				<!-- Breadcrumb -->
+				<div class="ui breadcrumb">
+					<a class="section" href="{% url 'results' %}">Results</a>
+					<i class="right angle icon divider"></i>
+					<div class="active section">Port Scan</div>
+					
+				</div>
+				
+				{% if all_results %}
+
+					<div class="ui raised {{ colors | random }} segment">
+						{% for res in all_results %}
+							<a href="{% url 'results' 'port-scan' res.id %}">
+								<div class="ui middle aligned selection animated list">
+									<div class="item">
+										<div class="ui {{ colors | random }} horizontal label">{{ res.tool }}</div>
+										<div class="content">
+											<div class="header">
+												<h3>{{ res.domain | default:"Error, Please Delete this" }}</h3>
+											</div>
+											<b>Performed On: </b>{{ res.dt }}
+										</div>
+									</div>
+								</div>
+							</a>
+							<br>
+						{% endfor %}
+					</div>
+					<br>
+				{% else %}
+					<div class="ui placeholder segment">
+						<div class="ui icon header">
+							<i class="searchengin icon"></i>
+							No Results Found for Port Scan
+						</div>
+						<button class="ui primary button" onclick="location.href='{% url 'port-scan' %}'">Scan Now</button>
+					</div>
+				{% endif %}
+			</main>
+		{% endblock %}
+
+	</body>
+	
+	
+	
+</html>

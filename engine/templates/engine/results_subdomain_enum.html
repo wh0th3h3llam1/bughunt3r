@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		{% block title %}
+		<title>Subdomain Enumeration Results</title>
+		{% endblock %}
+	</head>
+
+	<body>
+
+		{% block main %}
+			<main class="ui container">
+				<br>
+				<h1 class="ui header">Subdomain Enumeration Results
+				<br>
+
+				<!-- Breadcrumb -->
+				<div class="ui breadcrumb">
+					<a class="section" href="{% url 'results' %}">Results</a>
+					<i class="right angle icon divider"></i>
+					<div class="active section">Subdomain Enumeration</div>
+				</div>
+
+				{% if all_results %}
+					<div class="ui raised {{ colors | random }} segment">
+						{% for res in all_results %}
+							<a href="{% url 'results' 'subdomain-enum' res.id %}">
+								<div class="ui selection animated list">
+									<div class="item">
+										<div class="content">
+											<div class="header">
+												<h3>{{ res.domain | default:"Error, Please Delete this" }}</h3>
+											</div>
+											<b>Performed On: </b>{{ res.dt }}
+										</div>
+									</div>
+								</div>
+							</a>
+							<br>
+						{% endfor %}
+					</div>
+					<br>
+				{% else %}
+					<div class="ui placeholder segment">
+						<div class="ui icon header">
+						<i class="searchengin icon"></i>
+						No Results Found
+						</div>
+						<button class="ui primary button" onclick="location.href='{% url 'subdomain-enum' %}'">
+							Scan Now
+						</button>
+					</div>
+				{% endif %}
+			</main>
+		{% endblock %}
+
+	</body>
+	
+	
+	
+</html>

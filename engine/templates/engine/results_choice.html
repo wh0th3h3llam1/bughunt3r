@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		{% block title %}
+		<title>Results</title>
+		{% endblock %}
+
+		{% block js %}
+			<script src="{% static 'js/scan_started.js' %}"></script>
+		{% endblock %}
+
+	</head>
+
+	<body>
+
+		{% block main %}
+			<main class="ui container">
+				<br>
+				<h1 class="ui header center">All Results</h1>
+				<br>
+
+				<div class="ui three column grid">
+					<div class="column">
+						<a href="{% url 'results' 'all' %}">
+							<div class="ui raised {{ colors | random }} segment">
+								<h2 class="ui header">All Results</h2>
+							</div>
+						</a>
+					</div>
+					<div class="column">
+						<a href="{% url 'results' 'subdomain-enum' %}">
+							<div class="ui raised {{ colors | random }} segment">
+								<h2 class="ui header">Subdomain Enumeration</h2>
+							</div>
+						</a>
+					</div>
+					<div class="column">
+						<a href="{% url 'results' 'port-scan' %}">
+							<div class="ui raised {{ colors | random }} segment">
+								<h2 class="ui header">Port Scan</h2>
+							</div>
+						</a>
+					</div>
+				  </div>
+			</main>
+		{% endblock %}	
+	</body>
+	
+</html>

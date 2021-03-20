@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load startswith %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,39 +14,77 @@
 		<title>Result #{{ id }}</title>
 		{% endblock %}
 
-		<script src="{% static 'js/copy_to_clip.js' %}"></script>
+		{% block js %}
+			
+			<script src="{% static 'js/show_modal.js' %}"></script>
+			<script src="{% static 'js/export_file.js' %}"></script>
+			<script src="{% static 'js/copy_to_clip.js' %}"></script>
+			<script src="{% static 'semantic/tablesort.js' %}"></script>
+			<!-- <script>
+				$(document).ready(function (){
+					$('table').tablesort();
+					console.log("Table sort loaded"); 
+				});
+			</script> -->
+
+		{% endblock %}
 		
 	</head>
 
-	<body onload="load()">
+	<body>
 
 		{% block main %}
 			<main class="ui container">
 				<br>
 				<h1 class="ui header center">Result #{{ id }}</h1>
 				<br>
+				<div class="ui breadcrumb">
+					<a class="section" href="{% url 'results' %}">Results</a>
+					<i class="right angle icon divider"></i>
+					<a class="section" href="">Subdomain Enumeration</a>
+					<i class="right angle icon divider"></i>
+					<div class="active section">{{ id }}</div>
+				</div>
+				<br>
 				{% if result %}
 					<div class="ui raised {{ colors | random }} segment">
-						<h2 class="ui header">Scan Details</h2>
+						<h2 class="ui header center">Scan Details</h2>
 						<div>
 							<b>Domain: </b> {{ domain | default:"Error" }}
 							<br>
 							<b>Performed on:</b> {{ dt }}
 							<br>
 							<b>Subdomains Found:</b> {{ size }}
+							<br>
+							<b>Active Subdomains:</b> {{ active }}
 						</div>
 					</div>
+
+					<div class="ui slider checkbox">
+						<input type="checkbox" name="active-subdomains">
+						<label>Show only Active Subdomains</label>
+					  </div>
+					
 					<h4 class="ui horizontal divider header">
 						<i class="bar chart icon"></i>
 						Scan Results
-					  </h4>
+					</h4>
+					
+					<div class="ui fluid search">
+						<div class="ui icon input">
+							<input class="prompt" type="text" placeholder="Search Domains...">
+							<i class="search icon"></i>
+						</div>
+						<div class="results"></div>
+					</div>
+
 					<table class="ui celled {{ colors | random }} sortable table">
-						<thead>
+						<thead onclick="$('table').tablesort();">
 							<tr>
 								<th class="center aligned">No.</th>
 								<th class="center aligned">Domain Name</th>
 								<th class="center aligned">HTTP Status</th>
-								<th class="center aligned">Port Scan</th>
+								<!-- <th class="center aligned">Port Scan</th> -->
 								<th class="center aligned">Action</th>
 							</tr>
 						</thead>
@@ -57,23 +96,13 @@
 										<a target="_blank" href="http://{{ i }}">{{ i }}</a>
 									</td>
 									<td class="center aligned">
-										<!-- <i class="icon red close"></i> -->
-										<!-- {% if s.status|startswith:'2' %}
-											green
-										{% elif s.status|startswith:'3' %}
-											orange
-										{% elif s.status|startswith:'4' %}
-											red
-										{% else %}
-											yellow
-										{% endif %} -->
 										<div class="ui {% if s.status|startswith:'2' %}green{% elif s.status|startswith:'3' %}orange{% elif s.status|startswith:'4' %}red{% else %}yellow{% endif %} circular label">{{ s.status | default:"Unknown" }}</div>
 										<!-- <div class="ui red label">{{ s.msg | default:"Unknown"}}</div> -->
 									</td>
-									<td class="center aligned">
-										<!-- <i class="icon red close"></i>Unknown -->
+									<!-- <td class="center aligned">
+										<i class="icon red close"></i>Unknown
 										<div class="ui green label">Green</div>
-									</td>
+									</td> -->
 									<td class="center aligned">
 										<button class="circular small ui icon button" onclick="copyToClip({{ forloop.counter }})" data-tooltip="Copy to Clipboard">
 											<i class="icon clipboard"></i>
@@ -83,15 +112,55 @@
 							{% endfor %}
 						</tbody>
 					</table>
-				
+					
+					<br>
+					
+					<div class="ui primary animated fade button" tabindex="0">
+						<div class="visible content">Export Scan Result</div>
+						<div class="hidden content" onclick="exportFile({{ id }}, {{ domain }});">
+							<i class="file alternate outline icon"></i>
+						</div>
+					</div>
+					<div class="ui red animated fade button" tabindex="0">
+						<div class="visible content">Delete Scan</div>
+						<div class="hidden content" onclick="showModal();">
+							<i class="trash icon"></i>
+						</div>
+					</div>
+
+					<!-- <button class="ui red button" onclick="showModal();"> -->
+						<!-- Delete -->
+					<!-- </button> -->
+
+					<div class="ui modal">
+						<i class="close icon"></i>
+						<div class="header">
+							Confirm Delete
+						</div>
+						<div class="content">
+							<p>Are you sure to delete the scan result for {{ id }} ??</p>
+							<div class="actions">
+								<button class="ui green deny button">
+									No, Take me Back
+								</button>
+								<button class="ui error right labeled icon button" onclick="">
+									Yep, Delete It
+									<i class="checkmark icon"></i>
+								</button>
+							</div>
+						</div>
+					</div>
 				{% else %}
 					<div class="ui placeholder segment">
 						<div class="ui icon header">
 						<i class="searchengin icon"></i>
 						No Scan Result Found for #{{ id }}
 						</div>
-						<div class="ui primary button">
-							<a href="{% url 'subdomain-enum' %}">Scan Now</a>
+						<div class="ui primary animated button" tabindex="0">
+							<div class="visible content">Scan Subdomain</div>
+							<div class="hidden content" onclick="location.href='{% url 'subdomain-enum' %}'">
+								<i class="right arrow icon"></i>
+							</div>
 						</div>
 					</div>
 				{% endif %}
@@ -101,12 +170,18 @@
 			<script src="{% static 'js/copy_to_clip.js' %}"></script>
 		{% endblock %}
 
-		<script>
-			function load() {
-				$('table').tablesort();
-				console.log("Table sort loaded");
-			}
-		</script>
 	</body>
+	
+	{#	
+		<script src="{% static 'js/show_modal.js' %}"></script>
+		<script src="{% static 'js/copy_to_clip.js' %}"></script>
+		<script src="{% static 'semantic/tablesort.js' %}"></script>
+		<script>
+			$(document).ready(function (){
+				$('table').tablesort();
+				console.log("Table sort loaded"); 
+			});
+			</script>
+	#}
 
 </html>

@@ -14,11 +14,108 @@
 	</head>
 	<body>
 		{% block main %}
-			<main class="ui container center">
+			<main class="ui container">
 				<br>
-				<h1 class="ui header">About</h1>
+				<h1 class="ui header center">About</h1>
 				<br>
 				
+				<div class="ui raised {{ colors | random }} segment">
+					<br>
+					<h3>bughunt3r is just a pipeline of recon. bughunt3r would not have been possible without the following individuals/organizations.</h3>
+					<br>
+					<div class="ui list left aligned">
+						<a class="item" target="_blank" href="https://github.com/OWASP/">
+							<i class="right triangle icon"></i>
+							<div class="content">
+								<div class="header">
+								Amass: OWASP
+								</div>
+							</div>
+						</a>
+						<a class="item" target="_blank" href="https://github.com/projectdiscovery/">
+							<i class="right triangle icon"></i>
+							<div class="content">
+								<div class="header">
+								subfinder: ProjectDiscovery
+								</div>
+							</div>
+						</a>
+						<a class="item" target="_blank" href="https://github.com/aboul3la/">
+							<i class="right triangle icon"></i>
+							<div class="content">
+								<div class="header">
+								Sublist3r: Ahmed Aboul-Ela
+								</div>
+							</div>
+						</a>
+						<a class="item" target="_blank" href="https://github.com/tomnomnom/assetfinder">
+							<i class="right triangle icon"></i>
+							<div class="content">
+								<div class="header">
+								assetfinder: Tom Hudson
+								</div>
+							</div>
+						</a>
+						<a class="item" target="_blank" href="https://github.com/lc">
+							<i class="right triangle icon"></i>
+							<div class="content">
+								<div class="header">
+								gau: Corben Leo
+								</div>
+							</div>
+						</a>
+						<a class="item" target="_blank" href="https://github.com/hakluke/hakrawler">
+							<i class="right triangle icon"></i>
+							<div class="content">
+								<div class="header">
+								hakrawler : Luke Stephens
+								</div>
+							</div>
+						</a>
+						<a class="item" target="_blank" href="https://github.com/maurosoria/dirsearch">
+							<i class="right triangle icon"></i>
+							<div class="content">
+								<div class="header">
+								dirsearch: maurosoria
+								</div>
+							</div>
+						</a>
+						<a class="item" target="_blank" href="https://github.com/haccer/subjack">
+							<i class="right triangle icon"></i>
+							<div class="content">
+								<div class="header">
+								subjack haccer
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+				<br>
+				<div class="ui raised {{ colors | random }} segment">
+					<h1 class="ui header huge center">About the Author</h1>
+					<a class="ui blue image label" href="https://github.com/wh0th3h3llam1" target="_blank">
+						<img src="{% static 'images/avatar.png' %}">
+						wh0am1
+						<div class="detail">Author</div>
+					</a>
+					<br>
+					This framework is written by wh0am1
+				</div>
+				<br>
+				<div class="ui placeholder">
+					<div class="image header">
+						<div class="line"></div>
+						<div class="line"></div>
+					</div>
+					<div class="paragraph">
+						<div class="line"></div>
+						<div class="line"></div>
+						<div class="line"></div>
+						<div class="line"></div>
+						<div class="line"></div>
+					</div>
+				</div>
+				<br>
 			</main>
 		{% endblock %}
 	</body>

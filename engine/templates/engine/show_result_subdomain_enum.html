@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load startswith %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		{% block title %}
+		<title>Result #{{ id }}</title>
+		{% endblock %}
+
+		{% url 'subdomain-enum' as se %}
+		
+		{% block styles %}
+			<link rel="stylesheet" type="text/css" href="{% static 'css/lightbox.css' %}">
+		{% endblock %}
+			
+		{% block js %}
+			
+			<script src="{% static 'js/show_modal.js' %}"></script>
+			<script src="{% static 'js/export_file.js' %}"></script>
+			<script src="{% static 'js/raw_file.js' %}"></script>
+			<script src="{% static 'js/delete_scan.js' %}"></script>
+			<!-- <script src="{% static 'js/copy_to_clip.js' %}"></script> -->
+			<script src="{% static 'js/scan_started.js' %}"></script>
+			<script src="{% static 'js/lightbox.js' %}"></script>
+			<script src="{% static 'semantic/tablesort.js' %}"></script>
+			<script>
+				$(document).ready(function (){
+					$('table').tablesort();
+					console.log("Table sort loaded"); 
+				});
+			</script>
+
+		{% endblock %}
+		
+	</head>
+
+	<body>
+
+		{% block main %}
+			<main class="ui container">
+				<br>
+				<h1 class="ui header center">Result #{{ id }}</h1>
+				<br>
+				<div class="ui breadcrumb">
+					<a class="section" href="{% url 'results' %}">Results</a>
+					<i class="right angle icon divider"></i>
+					<a class="section" href="{% url 'results' 'subdomain-enum' %}">Subdomain Enumeration</a>
+					<i class="right angle icon divider"></i>
+					<div class="active section">{{ id }}</div>
+				</div>
+				<br>
+				{% if result == 'empty' %}
+
+					<div class="ui placeholder segment">
+						<div class="ui icon header">
+							<i class="exclamation triangle icon"></i>
+							Empty Result
+						</div>
+					</div>
+					
+				{% elif result %}
+					<!-- <div class="ui raised {{ colors | random }} segment">
+						<h2 class="ui header center">Scan Details</h2>
+						<div>
+							<b>Domain: </b> {{ domain | default:"Error" }}
+							<br>
+							<b>Performed on:</b> {{ dt }}
+							<br>
+							<b>Subdomains Found:</b> {{ size }}
+							{% if active %}
+								<br>
+								<b>Active Subdomains:</b> {{ active_domains }}
+							{% endif %}
+						</div>
+					</div> -->
+					<div class="ui raised {{ colors | random }} segment">
+						<h2 class="ui header center">Scan Details</h2>
+						<div>
+							<b>Domain: </b> {{ domain | default:"Not Found" }}
+							<br>
+							<b>Performed on: </b> {{ dt }}
+							<br>
+							<b>Tool Used: </b> {{ tool_used }}
+							<br>
+							<b>Subdomains Found: </b> {{ size }}
+							{% if active %}
+								<br>
+								<b>Active Subdomains:</b> {{ active_domains }}
+							{% endif %}
+						</div>
+					</div>
+
+					<!-- Get Active Subdomain -->
+					<button id="active_subdomain_btn" class="ui green button {% if active %} active {% endif %}" onclick="activeSubdomainScanStarted();" data-url="{% url 'results' 'subdomain-enum' id 'active' %}">
+						Get Active Subdomains
+					</button>
+
+					<!-- EyeWitness -->
+					<!-- <button id="eyewitness_btn" class="ui orange button {% if active %} active {% endif %}" onclick="eyewitnessScanStarted();" data-url="{% url 'results' 'subdomain-enum' id 'eyewitness' %}" data-tooltip="Get Screenshot of all Subdomains">EyeWitness</button> -->
+
+					<div class="ui orange animated fade button" tabindex="0" data-tooltip="Get Screenshot of all Subdomains">
+						<div class="visible content">EyeWitness</div>
+						<div class="hidden content" onclick="eyewitnessScanStarted();">
+							<input type="hidden" id="eyewitness_btn" data-url="{% url 'results' 'subdomain-enum' id 'eyewitness' %}">
+							<i class="images outline icon"></i>
+						</div>
+					</div>
+					
+					<h4 class="ui horizontal divider header">
+						<i class="bar chart icon"></i>
+						Scan Results
+					</h4>
+					
+					{% if active %}
+						
+						<table class="ui celled {{ colors | random }} sortable table">
+							<thead onclick="$('table').tablesort();">
+								<tr>
+									<th class="center aligned">No.</th>
+									<th class="center aligned">Domain Name</th>
+									<th class="center aligned">HTTP Status</th>
+									<th class="center aligned">Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for i, s in result %}
+									<tr>
+										<td class="center aligned">{{ forloop.counter }}</td>
+										<td class="center aligned" id="{{ forloop.counter }}">
+											<a target="_blank" href="http://{{ i }}">{{ i }}</a>
+										</td>
+										<td class="center aligned">
+											<div class="ui {% if s.status|startswith:'2' %}green{% elif s.status|startswith:'3' %}yellow{% elif s.status|startswith:'4' %}red{% else %}orange{% endif %} circular label" data-tooltip="Response: {{ s.msg | default:'Unknown' }}">{{ s.status | default:"Unknown" }}</div>
+											<!-- : {{ s.msg | default:"Unknown" }} -->
+										</td>
+										<!-- <td class="center aligned">
+											<i class="icon red close"></i>Unknown
+											<div class="ui green label">Green</div>
+										</td> -->
+										<td class="center aligned">
+											<button class="circular small ui icon button" onclick="copyToClip({{ forloop.counter }})" data-tooltip="Copy to Clipboard">
+												<i class="icon clipboard"></i>
+											</button>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					
+					{% else %}
+						<table class="ui celled {{ colors | random }} sortable table">
+							<thead onclick="$('table').tablesort();">
+								<tr>
+									<th class="center aligned">No.</th>
+									<th class="center aligned">Domain Name</th>
+									<th class="center aligned">Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for i in result %}
+									<tr>
+										<td class="center aligned">{{ forloop.counter }}</td>
+										<td class="center aligned" id="{{ forloop.counter }}">
+											<a target="_blank" href="http://{{ i }}">{{ i }}</a>
+										</td>
+										<td class="center aligned">
+											<button class="circular small ui icon button" onclick="copyToClip({{ forloop.counter }})" data-tooltip="Copy to Clipboard">
+												<i class="icon clipboard"></i>
+											</button>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					
+					{% endif %}
+					<br>
+					
+					<!-- Export File -->
+					<div class="ui primary animated fade button" tabindex="0">
+						<div class="visible content">Export Scan Result</div>
+						<div class="hidden content" onclick="exportFile();">
+							<input type="hidden" id="export" name="export" value="export" data-url="{% url 'export_scan_results' 'subdomain-enum' tool_used id %}">
+							<i class="file alternate outline icon"></i>
+						</div>
+					</div>
+
+					<!-- Raw File -->
+					<div class="ui yellow animated fade button" tabindex="0">
+						<div class="visible content">Raw</div>
+						<div class="hidden content" onclick="rawFile();">
+							<input type="hidden" id="raw" name="raw" value="raw" data-url="{% url 'raw_file' 'subdomain-enum' tool_used id %}">
+							<i class="code icon"></i>
+						</div>
+					</div>
+
+				{% else %}
+					<div class="ui placeholder segment">
+						<div class="ui icon header">
+						<i class="searchengin icon"></i>
+						No Scan Result Found for #{{ id }}
+						</div>
+						<div class="ui primary animated button" tabindex="0">
+							<div class="visible content">Scan Subdomain</div>
+							<div class="hidden content" onclick="location.href='{{ se }}'">
+								<i class="right arrow icon"></i>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+	
+				<div class="ui red animated fade button" tabindex="0">
+					<div class="visible content">Delete Scan</div>
+					<div class="hidden content" onclick="showModal();">
+						<i class="trash icon"></i>
+					</div>
+				</div>
+
+				<div class="ui modal">
+					<i class="close icon"></i>
+					<div class="header">
+						Confirm Delete
+					</div>
+					<div class="content">
+						<p>Are you sure to delete the scan result for {{ id }} ??</p>
+						<div class="actions">
+							<button class="ui green deny button">
+								No, Take me Back
+							</button>
+							<input type="hidden" name="scan_type" value="port-scan">
+							<input type="hidden" id="delete" name="delete" value="delete" data-url="{% url 'results' 'subdomain-enum' id 'delete' %}">
+							<button class="ui red right labeled icon button" onclick="deleteScan({{ id }});">
+								Yep, Delete It
+								<i class="checkmark icon"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+
+			</main>
+			<br><br>
+			<script src="{% static 'js/copy_to_clip.js' %}"></script>
+		{% endblock %}
+
+		</body>
+</html>

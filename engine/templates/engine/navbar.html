@@ -19,18 +19,21 @@
 	<a class="{% if request.path == pos %}active{% endif %} item" href="{{ pos }}">
 		Port Scan
 	</a>
-	<a class="{% if request.path|startswith:'/results/' == re %}active{% endif %} item" href="{{ re }}">
+	<a class="{% if request.path|startswith:'/results/' %}active{% endif %} item" href="{{ re }}">
 		Results
 	</a>
 	<a class="{% if request.path == ab %}active{% endif %} item" href="{{ ab }}">
 		About
 	</a>
 	<div class="right menu">
-		<div class="ui buttons">
+		<!-- <div class="ui buttons">
 			<button class="ui button"><i class="adjust icon"></i>Light</button>
 			<div class="or"></div>
 			<button class="ui inverted secondary button"><i class="adjust icon"></i>Dark</button>
-			<!-- <button class="ui basic button"><i class="adjust icon"></i></button> -->
-		</div>
+		</div> -->
+		<!-- <button class="ui basic button"><i class="adjust icon"></i></button> -->
+		<button class="ui toggle button">
+			<i class="adjust icon"></i>
+		</button>
 	</div>
 </div>

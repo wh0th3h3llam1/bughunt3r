@@ -13,7 +13,10 @@
 		<title>All Results</title>
 		{% endblock %}
 
-		<script src="{% static 'js/copy_to_clip.js' %}"></script>
+		{% block js %}
+			<script src="{% static 'js/scan_started.js' %}"></script>
+		{% endblock %}
+
 	</head>
 
 	<body>
@@ -23,18 +26,22 @@
 				<br>
 				<h1 class="ui header center">All Results</h1>
 				<br>
-				
 				{% if all_results %}
-				<div class="ui raised {{ colors | random }} segment">
+
+					<div class="ui fluid search">
+						<div class="ui icon input">
+							<input class="prompt" type="text" placeholder="Search Domains...">
+							<i class="search icon"></i>
+						</div>
+						<div class="results"></div>
+					</div>
+
+					<div class="ui raised {{ colors | random }} segment" onclick="activeSubdomainScanStarted();">
 						{% for res in all_results %}
 							<a href="{% url 'results' res.id %}">
 								<div class="ui middle aligned selection animated list">
 									<div class="item">
-										<div class="right floated content">
-											<button class="ui red button">
-												Delete
-											</button>
-										</div>
+										<div class="ui {{ colors | random }} horizontal label">sublist3r</div>
 										<div class="content">
 											<div class="header">
 												<h3>{{ res.domain | default:"Error, Please Delete this" }}</h3>
@@ -48,19 +55,37 @@
 						{% endfor %}
 					</div>
 					<br>
+
+				<!-- If No Result found for given id -->
 				{% else %}
 					<div class="ui placeholder segment">
 						<div class="ui icon header">
 						<i class="searchengin icon"></i>
 						No Results Found
 						</div>
-						<button class="ui primary button" onclick="location.href='{% url 'subdomain-enum' %}'">
-							Scan Now
-						</button>
+						<div class="inline">
+							<div class="ui primary animated button" tabindex="0">
+								<div class="visible content">Scan Subdomain</div>
+								<div class="hidden content" onclick="location.href='{% url 'subdomain-enum' %}'">
+									<i class="right arrow icon"></i>
+								</div>
+							</div>
+						</div>
+						&nbsp;
+						<div class="ui primary animated button" tabindex="0">
+							<div class="visible content">Scan Ports</div>
+							<div class="hidden content" onclick="location.href='{% url 'port-scan' %}'">
+								<i class="right arrow icon"></i>
+							</div>
+						</div>
 					</div>
 				{% endif %}
 			</main>
-		{% endblock %}
+		{% endblock %}	
 	</body>
-
+	
 </html>
+
+<!-- <button class="ui primary right floated button" onclick="location.href='{% url 'subdomain-enum' %}'">Scan Subdomain</button>
+&nbsp;
+<button class="ui primary left floated button" onclick="location.href='{% url 'port-scan' %}'">Scan Port</button> -->

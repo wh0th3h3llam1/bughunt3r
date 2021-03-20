@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load startswith %}
+{% load get_last_item %}
+{% load get_first_item %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		{% block title %}
+			<title>Result #{{ id }}</title>
+		{% endblock %}
+
+		{% block js %}
+			<script src="{% static 'js/show_modal.js' %}"></script>
+			<script src="{% static 'js/export_file.js' %}"></script>
+			<script src="{% static 'js/raw_file.js' %}"></script>
+			<script src="{% static 'js/delete_scan.js' %}"></script>
+			<script src="{% static 'semantic/tablesort.js' %}"></script>
+		{% endblock %}
+		
+	</head>
+
+	<body>
+
+		{% block main %}
+			<main class="ui container">
+				<br>
+				<h1 class="ui header center">Result #{{ id }}</h1>
+				<br>
+				<div class="ui breadcrumb">
+					<a class="section" href="{% url 'results' %}">Results</a>
+					<i class="right angle icon divider"></i>
+					<a class="section" href="{% url 'results' 'port-scan' %}">Port Scan</a>
+					<i class="right angle icon divider"></i>
+					<div class="active section">{{ id }}</div>
+				</div>
+				<br>
+				{% if result %}
+					<div class="ui raised {{ colors | random }} segment">
+						<h2 class="ui header center">Scan Details</h2>
+						<div>
+							<!-- {% with result.nmap.command_line|get_last_item as host_name %} -->
+								<!-- <b>Host Name: </b> {{ host_name | default:"Error" }} -->
+								<b>HostName:</b> {{ hostname }}
+								<br>
+								<b>Performed on:</b> {{ dt }}
+								<br>
+								<b>Tool Used:</b> {{ tool_used }}
+								<br>
+								<b>IPv4 Address:</b> {{ scan_info.addresses.ipv4 }}
+								<br>
+								<b>Port Range:</b> {{ port_range }}
+								<br>
+								<b>M.A.C Address:</b> {{ scan_info.addresses.mac }}
+								<br>
+								<b>Nmap Command:</b> {{ result.nmap.command_line }}
+							<!-- {% endwith %} -->
+						</div>
+					</div>
+
+					<div class="ui raised {{ colors | random }} segment">
+						<h2 class="ui header center">Scan Statistics</h2>
+						<div>
+							<b>Time Elapsed: </b> {{ result.nmap.scanstats.elapsed | default:"Error" }}s
+							<br>
+							<b>Uphosts:</b> {{ result.nmap.scanstats.uphosts }}
+							<br>
+							<b>Downhosts:</b> {{ result.nmap.scanstats.downhosts }}
+							<br>
+							<b>Total Hosts:</b> {{ result.nmap.scanstats.totalhosts }}
+						</div>
+					</div>
+
+					<h4 class="ui horizontal divider header">
+						<i class="bar chart icon"></i>
+						Scan Results
+					</h4>
+					
+					<table class="ui celled {{ colors | random }} sortable table">
+						<thead onclick="$('table').tablesort();">
+							<tr>
+								<th class="center aligned">No.</th>
+								<!-- <th class="center aligned">Host Name</th> -->
+								<th class="center aligned">Port Number</th>
+								<th class="center aligned">Status</th>
+								<!-- <th class="center aligned">Reason</th> -->
+								<th class="center aligned">Service Running</th>
+								<th class="center aligned">Product Running</th>
+								<th class="center aligned">Version</th>
+								<th class="center aligned">Other Info</th>
+								<!-- <th class="center aligned">Conf</th> -->
+								<th class="center aligned">CPE</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for port, port_info in scan_info.tcp.items %}
+								<tr>
+									<td class="center aligned">{{ forloop.counter }}</td>
+									<td class="center aligned" id="{{ forloop.counter }}">{{ port }}</td>
+									<td class="center aligned">
+										<div class="ui {% if port_info.state == 'open' %}green{% elif port_info.state == 'closed' %}red{% else %}yellow{% endif %} circular label">{{ port_info.state | default:"Unknown" }}</div>
+										<!-- {{ port_info.state }} -->
+									</td>
+									<td class="center aligned">
+										{{ port_info.name }}
+									</td>
+									<td class="center aligned">
+										{{ port_info.product }}
+									</td>
+									<td class="center aligned">
+										{{ port_info.version | default:"Unkown" }}
+									</td>
+									<td class="center aligned">
+										{{ port_info.extrainfo | default:"Unknown" }}
+									</td>
+									<td class="center aligned">
+										{{ port_info.cpe }}
+									</td>
+									
+									<!-- {% for key, value in port_info.items %}
+										<td class="center aligned">
+												{{ value | default:"None" }}
+										</td>
+									{% endfor %} -->
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					{% comment %}
+						
+					{% for keys, values in scan_info.tcp.items %}
+						Port: {{ keys }}
+						<br>
+						{% for k, v in values.items %}
+							{{ k }}-----------{{ v }}
+						{% endfor %}
+						<br>
+						======================
+						<br>
+					{% endfor %}
+					
+					{% endcomment %}
+					<br>
+					<br>
+					
+					<div class="ui primary animated fade button" tabindex="0">
+						<div class="visible content">Export Scan Result</div>
+						<div class="hidden content" onclick="exportFile();">
+							<input type="hidden" id="export" name="export" value="export" data-url="{% url 'export_scan_results' 'port-scan' tool_used id %}">
+							<i class="file alternate outline icon"></i>
+						</div>
+					</div>
+
+					<div class="ui yellow animated fade button" tabindex="0">
+						<div class="visible content">Raw</div>
+						<div class="hidden content" onclick="rawFile();">
+							<input type="hidden" id="raw" name="raw" value="raw" data-url="{% url 'raw_file' 'port-scan' tool_used id %}">
+							<i class="code icon"></i>
+						</div>
+					</div>
+					<!-- {{ request.path }} -->
+
+
+				{% else %}
+					<div class="ui placeholder segment">
+						<div class="ui icon header">
+						<i class="searchengin icon"></i>
+						No Scan Result Found for #{{ id }}
+						</div>
+						<div class="ui primary animated button" tabindex="0">
+							<div class="visible content">Scan Subdomain</div>
+							<div class="hidden content" onclick="location.href='{% url 'subdomain-enum' %}'">
+								<i class="right arrow icon"></i>
+							</div>
+						</div>
+					</div>
+					
+				{% endif %}
+
+				<div class="ui red animated fade button" tabindex="0">
+					<div class="visible content">Delete Scan</div>
+					<div class="hidden content" onclick="showModal();">
+						<i class="trash icon"></i>
+					</div>
+				</div>
+
+				<div class="ui modal">
+					<i class="close icon"></i>
+					<div class="header">
+						Confirm Delete
+					</div>
+					<div class="content">
+						<p>Are you sure to delete the scan result for {{ id }} ??</p>
+						<div class="actions">
+							<button class="ui green deny button">
+								Nope, Take me Back
+							</button>
+							<input type="hidden" name="scan_type" value="port-scan">
+							<input type="hidden" id="delete" name="delete" value="delete" data-url="{% url 'results' 'port-scan' id 'delete' %}">
+							<!-- <button class="ui red right labeled icon button" onclick="location.href='{% url 'results' 'port-scan' id %}'"> -->
+							<button class="ui red right labeled icon button" onclick="deleteScan({{ id }});">
+								Yep, Delete It
+								<i class="checkmark icon"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+
+			</main>
+			<br><br>
+			<script src="{% static 'js/copy_to_clip.js' %}"></script>
+		{% endblock %}
+
+	</body>
+	
+</html>

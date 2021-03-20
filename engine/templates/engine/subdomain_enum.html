@@ -13,9 +13,22 @@
 			<title>Subdomain Enumeration</title>
 		{% endblock %}
 
+		{% block js %}
+			<script src="{% static 'js/scan_started.js' %}"></script>
+			<script>
+				function show_dropdown() {
+					$('.ui.dropdown').dropdown('show');
+					console.log("In dropdown");
+				}
+				// $(document).ready(function (){
+				// 	$('.ui.dropdown').dropdown('show');
+				// });
+			</script>
+		{% endblock %}
+
 	</head>
 
-	<body>
+	<body onload="$('.ui.dropdown').dropdown()">
 
 		{% block main %}
 			<main class="ui container">
@@ -24,65 +37,60 @@
 				<br>
 				<div>
 					
+					<!-- <form class="ui form"> -->
 					<form class="ui form" action="{% url 'results' %}" method="POST">
 						{% csrf_token %}
-						<div class="field">
+						<div class="required field" id="url_field">
 							<label>Domain</label>
-
-							<input placeholder="Domain.com" id="url" name="url" type="text" value="djangoproject.com">
+							<input placeholder="Domain.com or 127.0.0.1" id="url" name="url" type="text">
 						</div>
 						<!-- <div class="ui submit button">Submit</div> -->
 						<!-- <input type="submit" value="Find Subdomains" id="btn" class="ui button" onclick="onSubmit(event)"> -->
-						
+
 						{% comment %}
-						<div class="ui animated submit button" tabindex="0">
-							<div class="visible content">Find Subdomains</div>
-							<div class="hidden content">
-								<i class="right arrow icon"></i>
+							<div class="field">
+								<label>Tool To Use</label>
+								<div class="ui selection dropdown" onclick="show_dropdown();">
+									<input type="hidden" name="tool_to_use">
+									<i class="dropdown icon"></i>
+									<div class="default text">sublist3r</div>
+									<select class="menu" name="tool">
+										<option class="item" value="sublist3r" data-value="sublist3r">sublist3r</option>
+										<option class="item" value="subfinder" data-value="subfinder">subfinder</option>
+										<option class="item" value="amass" data-value="amass">amass</option>
+										<option class="item" value="knockpy" data-value="knockpy">knockpy</option>
+										<option class="item" value="findomain" data-value="findomain">findomain</option>
+									</select>
+								</div>
 							</div>
-						</div>
-						{% endcomment %}
-						{% comment %}
-							
-						<div class="field">
-							<label>Tool To Use</label>
-							<div class="ui selection dropdown" onload="$('.selection.dropdown').dropdown();">
-								<input type="hidden" name="gender">
-								<i class="dropdown icon"></i>
-								<!-- <div class="default text">sublist3r</div> -->
-								<select class="menu">
-									<option class="item" data-value="0">sublist3r</option>
-									<option class="item" data-value="1">subfinder</option>
-									<option class="item" data-value="2">amass</option>
-									<option class="item" data-value="3">knockpy</option>
-									<option class="item" data-value="4">findomain</option>
-								</select>
-							</div>
-						</div>
-						
 						{% endcomment %}
 
 						<div class="field">
 							<label>Tool To Use</label>
-							<select class="ui search dropdown" name="tool">
+							<select class="ui dropdown" name="tool" onclick="show_dropdown();">
 								<option selected value="sublist3r">sublist3r</option>
 								<option value="subfinder">subfinder</option>
-								<option value="amass">amass</option>
-								<option value="knockpy">knockpy</option>
-								<option value="findomain">findomain</option>
+								<option disabled value="amass">amass</option>
+								<option disabled value="knockpy">knockpy</option>
+								<option disabled value="findomain">findomain</option>
 							</select>
 						</div>
-
-						<input type="submit" value="Find Subdomains" id="btn" class="ui primary button" onclick="showToast();">
+						<input type="hidden" name="scan_type" value="subdomain-enum">
+						<button type="submit" id="btn" class="ui primary button" data-url="{% url 'results' %}" onclick="subdomainScanStarted(event);">Find Subdomains</button>
 					</form>
 					<br><br>
 
-					<h3 class="ui header">
-						Reference:
-					</h3>
-					<a href="https://pentester.land/cheatsheets/2018/11/14/subdomains-enumeration-cheatsheet.html#methods">https://pentester.land/cheatsheets/2018/11/14/subdomains-enumeration-cheatsheet.html#methods</a>
-					<br>
-					<a href="https://www.hackingloops.com/subdomain-discovery-osint-or-bruteforce/">https://www.hackingloops.com/subdomain-discovery-osint-or-bruteforce/</a>
+					<div>
+						<h3 class="ui header">
+							Reference:
+						</h3>
+					
+						<a href="https://pentester.land/cheatsheets/2018/11/14/subdomains-enumeration-cheatsheet.html#methods">https://pentester.land/cheatsheets/2018/11/14/subdomains-enumeration-cheatsheet.html#methods</a>
+						<br>
+						<a href="https://www.hackingloops.com/subdomain-discovery-osint-or-bruteforce/">https://www.hackingloops.com/subdomain-discovery-osint-or-bruteforce/</a>
+						<br>
+						<a href="https://github.com/FortyNorthSecurity/EyeWitness/tree/v20210205.1">https://github.com/FortyNorthSecurity/EyeWitness/tree/v20210205.1</a>
+					</div>
 					
 					{% comment %}
 					<form class="ui form" action="{% url 'find-subdomains' %}" method="POST">
@@ -110,18 +118,5 @@
 		{% endblock %}
 	</body>
 
-	<script src="{% static 'jquery/validate_url.js' %}"></script>
-	<script src="{% static 'js/loading.js' %}"></script>
-	<script>
-		
-		$('.selection.dropdown').dropdown();
-
-		function showToast() {
-			$('body')
-			.toast({
-				title: 'Subdomain Scan Started',
-				message: 'It may take a while to run the scan!'
-			});
-		}
-	</script>
+	<!-- <script src="{% static 'js/loading.js' %}"></script> -->
 </html>
