@@ -49,7 +49,37 @@
 							</div>
 						</a>
 					</div>
-				  </div>
+				</div>
+				<br><br>
+				<div class="ui raised blue segment">
+					<h2 class="ui huge header center">Statistics</h2>
+					<div class="ui three statistics">
+						<div class="statistic">
+							<div class="value">
+								{{ scan_all }}
+							</div>
+							<div class="label">
+								Total Scans
+							</div>
+							</div>
+							<div class="statistic">
+							<div class="value">
+								{{ scan_subdomain }}
+							</div>
+							<div class="label">
+								Subdomain Scans
+							</div>
+							</div>
+							<div class="statistic">
+							<div class="value">
+								{{ scan_port }}
+							</div>
+							<div class="label">
+								Port Scans
+							</div>
+							</div>
+					</div>
+				</div>
 			</main>
 		{% endblock %}	
 	</body>

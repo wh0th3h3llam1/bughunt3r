@@ -12,6 +12,26 @@
 		{% block title %}
 			<title>Home</title>
 		{% endblock %}
+
+		{% block js %}
+			<script src="{% static 'js/setup_auth.js' %}"></script>
+			<script src="{% static 'js/tandc.js' %}"></script>
+
+			<script>
+				$(document).ready(function (){
+					termsAndConditions();
+				});
+			</script>
+
+			<!-- {% if auth_setup is not True %} -->
+				<!-- <script>
+					$(document).ready(function (){
+						setupAuth();
+					});
+				</script> -->
+			<!-- {% endif %} -->
+
+		{% endblock %}
 	</head>
 
 	<body>
@@ -20,7 +40,7 @@
 			<main class="ui container">
 				<br>
 				<h1 class="ui header center">bughunt3r</h1>
-
+				<input type="hidden" id="set_auth" data-url="{% url 'settings' %}#settings">
 				{% if last_result %}
 					<div class="ui raised {{ colors | random }} segment">
 						<h2 class="ui header center">Last Scan</h2>
@@ -34,8 +54,52 @@
 							</div>
 						</a>
 					</div>
-					
 				{% endif %}
+				
+				<br><br>
+				<div class="ui raised blue segment">
+					<h2 class="ui huge header center">Statistics</h2>
+					<div class="ui three statistics">
+						<div class="statistic">
+							<div class="value">
+								{{ scan_all }}
+							</div>
+							<div class="label">
+								Total Scans
+							</div>
+							</div>
+							<div class="statistic">
+							<div class="value">
+								{{ scan_subdomain }}
+							</div>
+							<div class="label">
+								Subdomain Scans
+							</div>
+							</div>
+							<div class="statistic">
+							<div class="value">
+								{{ scan_port }}
+							</div>
+							<div class="label">
+								Port Scans
+							</div>
+							</div>
+					</div>
+				</div>
+
+				<div class="ui modal">
+					<div class="header">
+					  Terms And Conditions
+					</div>
+					<div class="content">
+						<div class="description">
+							By using this application, you accept that the developer is not responsible for any of the actions performed by you.
+						</div>
+					</div>
+					<div class="actions">
+						<div class="ui approve green button">I accept</div>
+					</div>
+				  </div>
 			</main>
 		{% endblock %}
 	</body>

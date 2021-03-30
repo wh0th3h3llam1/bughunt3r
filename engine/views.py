@@ -1,25 +1,52 @@
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .templates.tools.masscan import masscan
 from django.views.static import serve
-from bughunt3r.settings import STATIC_URL, EYEWITNESS_URL
+from bughunt3r.settings import STATIC_URL, STATIC_ROOT, EYEWITNESS_URL
 from django.shortcuts import render
 from datetime import datetime
 from os.path import isfile, join, isdir, exists
 from pathlib import Path
+from ipware import get_client_ip
 from os import listdir, walk
 
 import sublist3r, nmap, masscan
 import http.client as httplib
 import requests, os, time
 import _pickle as pickle
+import hashlib, shutil
 import urllib.request
 import glob, json
-import shutil
 
 # Create your views here.
 
-
+CWD = os.getcwd()
 COLORS = ['red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey']
+
+AUTH_CONFIG = "auth\config.json"
+AUTH_CONFIG_PATH = f"{CWD}\engine\static\{AUTH_CONFIG}"
+
+
+def auth():
+	if exists(AUTH_CONFIG_PATH):
+		print("authentication file exists")
+		with open(AUTH_CONFIG_PATH, "r") as f:
+			data = f.read()
+
+		if not data:
+			print("file empty")
+			return False
+		else:
+			conf = json.loads(data)
+			cred = conf['bughunt3r']['config']
+			unm = cred['user_name']
+			pwd = cred['password']
+			if unm == "" or pwd == "":
+				return False
+			else:
+				return True
+
+	else:
+		return False
 
 
 def home(request):
@@ -34,13 +61,28 @@ def home(request):
 		tool = temp[-2]
 		domain = ".".join(temp[1:-2])
 
-		res = {'timestamp':ts, 'type': type, 'domain': domain, 'dt': dt, 'tool': tool}
+		res = {'timestamp': ts, 'type': type, 'domain': domain, 'dt': dt, 'tool': tool}
 	except:
 		res = None
 	
+	
+	if auth():
+		auth_setup= True
+	else:
+		auth_setup= False
+	print(f"auth_setup {auth_setup}")
+
+	scan_all = len(get_results(get_files()))
+	scan_subdomain = len(get_results(get_files(type="subdomain-enum")))
+	scan_port = len(get_results(get_files(type="port-scan")))
+
 	context = {
 		"last_result": res,
-		"colors": COLORS,	
+		"colors": COLORS,
+		"auth_setup": True,
+		"scan_all": scan_all,
+		"scan_subdomain": scan_subdomain,
+		"scan_port": scan_port,
 	}
 	return render(request, 'engine/home.html', context)
 
@@ -48,8 +90,7 @@ def home(request):
 # def results(request, type=None, id=None, delete=None, active=None):
 def results(request, type=None, id=None, action=None, detailed_report=None):
 	print("In Results")
-	cwd = os.getcwd()
-	files_path = cwd + "\engine\static\scan_results"
+	files_path = CWD + "\engine\static\scan_results"
 	try:
 		onlyfiles = [f for f in listdir(files_path) if isfile(join(files_path, f))]
 	
@@ -62,23 +103,33 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 		
 		# If forwarded from Subdomain Enum
 		if scan_type == "subdomain-enum":
-			cwd = os.getcwd()
 			url = request.POST['url']
 			tool = request.POST.get('tool')
 			scan_type = 'subdomain-enum'
 			timestamp = int(datetime.timestamp(datetime.now()))
 			
 			file_name = f"\engine\static\scan_results\{timestamp}.{url}.{tool}.{scan_type}"
-			f = open(cwd + file_name, "w+")
-			# with open(cwd + file_name, "w+") as f:
+			f = open(CWD + file_name, "w+")
+			# with open(CWD + file_name, "w+") as f:
 				# pass
 			
-			if tool == "sublist3r":
-				subdomains = sublist3r.main(url, 40, cwd + file_name, ports=None, silent=False, verbose=False, enable_bruteforce=False, engines=None)
+			try:
+				# sublist3r
+				if tool == "sublist3r":
+					subdomains = sublist3r.main(url, 40, CWD + file_name, ports=None, silent=False, verbose=False, enable_bruteforce=False, engines=None)
+				
+				# subfinder
+				elif tool == "subfinder":
+					subdomains = os.system(f'{CWD}\\engine\\templates\\tools\\subfinder\\subfinder.exe -d {url} -o {CWD}{file_name} -silent')
+
+				# amass
+				else:
+					subdomains = os.system(f'{CWD}\\engine\\templates\\tools\\amass\\amass.exe enum -d {url} -o {CWD}{file_name} -silent')
 			
-			else:
-				subdomains = os.system(f'{cwd}\\engine\\templates\\tools\\subfinder\\subfinder.exe -d {url} -o {cwd}{file_name} -silent')
-			
+			except Exception as e:
+				print("Error SCanning subdommains")
+				print(str(e))
+
 			all_results = get_results(get_files(type=scan_type))
 			context = {
 				"all_results": all_results[::-1],
@@ -119,9 +170,6 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 				print("Error")
 				return render(request, 'engine/not_found.html')
 				
-			# print(url)
-			# print(ports)
-
 			# all_results = get_results(get_files(type=scan_type))
 			all_results = get_results(get_files())
 			context = {
@@ -152,10 +200,12 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 					os.remove(name)
 					message = "Deleted"
 					print("Deleted Succesfully")
+				
 				except Exception as e:
 					print(e)
 					print("Error Deleting File")
 					message = "Error"
+				
 				finally:
 					all_results = get_results(get_files(type=type))
 					context = {
@@ -176,7 +226,7 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 				print("In eyewitness")
 				subdomain_scan_file = Path(glob.glob(f"{files_path}\{id}*{type}")[0]).absolute()
 				try:
-					os.system(f'{cwd}\\engine\\templates\\tools\\eyewitness\\EyeWitness.exe -f {subdomain_scan_file}')
+					os.system(f'{CWD}\\engine\\templates\\tools\\eyewitness\\EyeWitness.exe -f {subdomain_scan_file}')
 					eyewitness_path = f"{EYEWITNESS_URL}\\EyeWitness_"
 					ew = glob.glob(f"{eyewitness_path}*")[-1]
 
@@ -188,10 +238,11 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 							final.append(f"{ew}\\images\\{f}")
 
 					
-					img = f"{cwd}\\engine\\images"
+					img = f"{CWD}\\engine\\images"
 					if exists(img):
 						print("removing images")
 						shutil.rmtree(img)
+						
 					print("creating images folder")
 					os.makedirs(img)
 
@@ -199,12 +250,14 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 					for f in final:
 						print("copying image: " + f)
 						shutil.copy2(f, img)
+
 					print("*****************************************************************************")
-					print(f"cwd: {cwd}")
+					print(f"CWD: {CWD}")
 					print("*****************************************************************************")
 					if detailed_report == "detailed_report":
 						file = glob.glob(f"{ew}\\report*")[0]
 						return serve(request, os.path.basename(file), os.path.dirname(file))
+					
 					local_images = glob.glob(f"{img}\*")
 					# print(local_images)
 					# li = []
@@ -377,21 +430,15 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 
 		# results/
 		else:
-			# all_results = list()
-			# for i in onlyfiles:
-			# 	temp = i.split('.')
-			# 	ts = int(temp[0])
-			# 	dt = datetime.fromtimestamp(int(ts))
-			# 	type = temp[-1]
-			# 	tool = temp[-2]
-			# 	domain = ".".join(temp[1:-2])
-			# 	# print(dt, ts)
-			# 	all_results.append({'dt': dt, 'id': ts, 'type': type, 'domain': domain})
-			
-			# all_results = get_results(get_files())
+			scan_all = len(get_results(get_files()))
+			scan_subdomain = len(get_results(get_files(type="subdomain-enum")))
+			scan_port = len(get_results(get_files(type="port-scan")))
+
 			context = {
-				# "all_results": all_results[::-1],
-				'colors': COLORS
+				"colors": COLORS,
+				"scan_all": scan_all,
+				"scan_subdomain": scan_subdomain,
+				"scan_port": scan_port,
 			}
 			print("In else else")
 			return render(request, 'engine/results_choice.html', context)
@@ -403,7 +450,6 @@ def subdomain(request):
 
 
 def findSubdomains(request):
-	cwd = os.getcwd()
 	url = request.POST['url']
 
 	timestamp = int(datetime.timestamp(datetime.now()))
@@ -411,11 +457,11 @@ def findSubdomains(request):
 	# print(datetime.fromtimestamp(timestamp))
 	
 	file_name = f"\engine\static\scan_results\{timestamp}.{url}.subdomain"
-	with open(cwd + file_name, "w+") as f:
+	with open(CWD + file_name, "w+") as f:
 		pass
 	
-	subdomains = sublist3r.main(url, 40, cwd + file_name, ports=None, silent=False, verbose=False, enable_bruteforce=False, engines=None)
-	# with open(cwd + file_name, "w+") as f:
+	subdomains = sublist3r.main(url, 40, CWD + file_name, ports=None, silent=False, verbose=False, enable_bruteforce=False, engines=None)
+	# with open(CWD + file_name, "w+") as f:
 	# 	data = list(map(str, f.read().split()))
 	
 	all_results = get_results(get_files())
@@ -454,8 +500,27 @@ def portscan(request):
 
 
 def about(request):
+	ip_add = request.META.get("REMOTE_ADDR")
+
+	client_ip, is_routable = get_client_ip(request)
+	if client_ip is None:
+		# Unable to get the client's IP address
+		print("Cant Get IP")
+	else:
+		# We got the client's IP address
+		if is_routable:
+			# The client's IP address is publicly routable on the Internet
+			print(client_ip)
+		else:
+			# The client's IP address is private
+			print("The client's IP address is private")
+			print(client_ip)
+			
+
+	# Order of precedence is (Public, Private, Loopback, None)
 	context = {
-		"colors": COLORS
+		"colors": COLORS,
+		"ip_add": ip_add
 	}
 	return render(request, 'engine/about.html', context)
 
@@ -482,9 +547,9 @@ def detailed_report(request, type=None, id=None, eyewitness=None, detailed_repor
 		print("Error")
 		print(e)
 
+
 def export_scan_results(request, scan_type=None, tool=None, id=None):
-	cwd = os.getcwd()
-	filepath = f"{cwd}\engine\static\scan_results\{id}*{tool}*{scan_type}"
+	filepath = f"{CWD}\engine\static\scan_results\{id}*{tool}*{scan_type}"
 	try:
 		file = glob.glob(filepath)[0]
 		return serve(request, os.path.basename(file), os.path.dirname(file))
@@ -494,8 +559,7 @@ def export_scan_results(request, scan_type=None, tool=None, id=None):
 
 
 def raw_file(request, scan_type=None, tool=None, id=None):
-	cwd = os.getcwd()
-	filepath = f"{cwd}\engine\static\scan_results\{id}*{tool}*{scan_type}"
+	filepath = f"{CWD}\engine\static\scan_results\{id}*{tool}*{scan_type}"
 	try:
 		file = glob.glob(filepath)[0]
 		if scan_type == "subdomain-enum":
@@ -507,6 +571,53 @@ def raw_file(request, scan_type=None, tool=None, id=None):
 		print("Error Finding File")
 		print(e)
 		return HttpResponse("Error Finding File")
+
+
+def settings(request):
+
+	if request.method == 'POST':
+		user_name = request.POST['user_name']
+		password = request.POST['passwd']
+		algorithm = request.POST.get('algo')
+		recovery_email = request.POST['recovery']
+		
+		print(user_name)
+		print(password)
+		print(hashlib.sha256(password.encode()).hexdigest())
+		print(algorithm)
+		print(recovery_email)
+
+	auth_setup = False
+	credentials = None
+
+	if auth():
+		auth_setup = True
+		
+		with open(AUTH_CONFIG_PATH, "r") as f:
+			data = f.read()
+
+		if not data:
+			print("file empty")
+			return False
+		else:
+			conf = json.loads(data)
+			cred = conf['bughunt3r']['config']
+			unm = cred['user_name']
+			pwd = cred['password']
+
+			credentials = {
+				'usernm': unm,
+				'passwd': pwd
+			}
+		
+	print(f"auth_setup {auth_setup}")
+
+	context = {
+		"colors" : COLORS,
+		"auth_setup": auth_setup,
+		"credentials": credentials,
+	}
+	return render(request, 'engine/settings.html', context)
 
 
 def get_files(type=None) -> list:

@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		{% block title %}
+			<title>Settings</title>
+		{% endblock %}
+
+		{% block js %}
+			<script src="{% static 'js/show_modal.js' %}"></script>
+			<script src="{% static 'js/generate_password.js' %}"></script>
+			<script src="{% static 'js/toggle_password.js' %}"></script>
+			<script>
+				function show_dropdown() {
+					$('.ui.dropdown').dropdown('show');
+				}
+				$(document).ready(function (){
+					$('#show_password').prop('checked', false);
+				});
+			</script>
+		{% endblock %}
+		
+	</head>
+
+	<body>
+
+		{% block main %}
+			<main class="ui container">
+				<br>
+				<div>
+					<!-- Back to Home -->
+					<div style="float: left;">
+						<button class="ui icon primary button" data-tooltip="Back to Home" onclick="location.href='{% url 'home' %}'">
+							<i class="arrow left icon"></i>
+						</button>
+					</div>
+					<div>
+						<h1 class="ui header center">Settings</h1>
+					</div>
+				</div>
+				<br><br>
+				
+				{% comment %}
+					
+					{% if auth_setup %}
+						<div class="ui raised yellow segment">
+							<h2 class="ui header center">GUI Authentication</h2>
+							
+							<form class="ui form" action="{% url 'settings' %}" method="POST">
+								{% csrf_token %}
+								
+								<!-- Username -->
+								<div class="required field" id="user_name_field">
+									<label>Username</label>
+									<input placeholder="not_admin" id="user_name" name="user_name" value='{{ credentials.usernm }}' type="text">
+								</div>
+
+								<!-- Password -->
+								<div class="required field" id="passwd_field">
+									<label>Password</label>
+									<input placeholder="a_long&random-Passw0rd" id="passwd" name="passwd" value="{{ credentials.passwd }}" type="password">
+								</div>
+
+								<!-- Show Password -->
+								<div class="ui slider checkbox">
+									<input type="checkbox" id="show_password" onclick="togglePassword()">
+									<label>Show Password</label>
+								</div>
+
+								<!-- Generate Password -->
+								<button 
+									id="generate"
+									class="ui mini button"
+									onclick="generatePassword(event);">
+									<!-- data-tooltip="Generate Password" -->
+									<i class="icon settings"></i>
+									Generate Password
+								</button>
+								<br>
+
+								<!-- Algorithm -->
+								<div class="required field">
+									<label>Encryption Algorithm</label>
+									<select class="ui dropdown" id="tool" name="algo" onclick="show_dropdown();">
+										<option selected value="sha256">SHA-256</option>
+										<option value="sha512">SHA-512</option>
+										<option value="sha3_256">SHA3-256</option>
+										<option value="sha3_512">SHA3-512</option>
+										<option value="md5">MD5 (Not Recommended)</option>
+									</select>
+								</div>
+								
+								<!-- Recovery Email -->
+								<div class="field" id="recovery_field">
+									<label>Recovery Email</label>
+									<input placeholder="recovery_email@itshouldbeaccessible.com" id="recovery" name="recovery" type="text">
+								</div>
+
+								<input type="hidden" name="change_cred" value="change_cred">
+								<button type="submit" id="change" class="ui green button" data-url="{% url 'settings' %}">Change Credentials</button>
+
+								<button id="delete_gui_authentication" class="ui red button" data-url="{% url 'settings' %}">Delete Authentication</button>
+							</form>
+						</div>
+
+					{% else %}
+					
+						<!-- Set Up GUI Authentication -->
+						<div class="ui raised green segment" id="setup_authentication">
+							<h2 class="ui header center">Set Up GUI Authentication</h2>
+							
+							<form class="ui form" action="{% url 'settings' %}" method="POST">
+								{% csrf_token %}
+								
+								<!-- Username -->
+								<div class="required field" id="user_name_field">
+									<label>Username</label>
+									<input placeholder="not_admin" id="user_name" name="user_name" type="text">
+								</div>
+
+								<!-- Password -->
+								<div class="required field" id="passwd_field">
+									<label>Password</label>
+									<input placeholder="a_long&random-Passw0rd" id="passwd" name="passwd" type="password">
+								</div>
+
+								<!-- Show Password -->
+								<div class="ui slider checkbox">
+									<input type="checkbox" id="show_password" onclick="togglePassword()">
+									<label>Show Password</label>
+								</div>
+
+								<!-- Generate Password -->
+								<button 
+									id="generate"
+									class="ui mini button"
+									onclick="generatePassword(event);">
+									<!-- data-tooltip="Generate Password" -->
+									<i class="icon settings"></i>
+									Generate Password
+								</button>
+								<br>
+
+								<!-- Algorithm -->
+								<div class="required field">
+									<label>Encryption Algorithm</label>
+									<select class="ui dropdown" id="tool" name="algo" onclick="show_dropdown();">
+										<option selected value="sha256">SHA-256</option>
+										<option value="sha512">SHA-512</option>
+										<option value="sha3_256">SHA3-256</option>
+										<option value="sha3_512">SHA3-512</option>
+										<option value="md5">MD5 (Not Recommended)</option>
+									</select>
+								</div>
+								
+								<!-- Recovery Email -->
+								<div class="field" id="recovery_field">
+									<label>Recovery Email</label>
+									<input placeholder="recovery_email@itshouldbeaccessible.com" id="recovery" name="recovery" type="text">
+								</div>
+
+								<button type="submit" id="setup" class="ui green button" data-url="{% url 'settings' %}">Set Up</button>
+							</form>
+						</div>
+					
+					{% endif %}
+					
+				{% endcomment %}
+				
+				<!-- Delete Scan -->
+				<div class="ui raised red segment">
+					<h2 class="ui header center">Delete All Scan Results</h2>
+
+					<button type="submit" id="delete_all_subdomain_scan" class="ui yellow button" data-url="{% url 'settings' %}">Delete All Subdomain Scan</button>
+					<br><br>
+					<button type="submit" id="delete_all_port_scan" class="ui orange button" data-url="{% url 'settings' %}">Delete All Port Scan</button>
+					<br><br>
+
+					<div class="ui red animated fade button" tabindex="0">
+						<div class="visible content">Delete All Scan</div>
+						<div class="hidden content" onclick="showModal();">
+							<i class="trash icon"></i>
+						</div>
+					</div>
+	
+					<div class="ui modal">
+						<i class="close icon"></i>
+						<div class="header">
+							Confirm Delete
+						</div>
+						<div class="content">
+							<h3 class="ui header">Are You Sure to Delete All the Scan Results ?</h3>
+							<p>This Action can not be undone.</p>
+							<div class="actions">
+								<button class="ui green deny button">
+									No, Take me Back
+								</button>
+								<input type="hidden" name="scan_type" value="port-scan">
+								<input type="hidden" id="delete_all" name="delete_all" value="delete_all" data-url="{% url 'settings' %}">
+								<button class="ui red right labeled icon button" onclick="deleteAllScan();">
+									Yep, Delete It
+									<i class="checkmark icon"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<br>
+			</main>
+		{% endblock %}
+	</body>
+
+</html>
