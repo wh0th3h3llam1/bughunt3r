@@ -31,7 +31,7 @@
 	<body onload="$('.ui.dropdown').dropdown()">
 
 		{% block main %}
-			<main class="ui container">
+			<main class="ui inverted container">
 				<br>
 				<h1 class="ui header center">Subdomain Enumeration</h1>
 				<br>
@@ -42,7 +42,7 @@
 						{% csrf_token %}
 						<div class="required field" id="url_field">
 							<label>Domain</label>
-							<input placeholder="Domain.com or 127.0.0.1" id="url" name="url" type="text">
+							<input placeholder="domain.com or 127.0.0.1" id="url" name="url" type="text">
 						</div>
 						<!-- <div class="ui submit button">Submit</div> -->
 						<!-- <input type="submit" value="Find Subdomains" id="btn" class="ui button" onclick="onSubmit(event)"> -->

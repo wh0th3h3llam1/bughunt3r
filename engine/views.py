@@ -7,6 +7,7 @@ from datetime import datetime
 from os.path import isfile, join, isdir, exists
 from pathlib import Path
 from ipware import get_client_ip
+from ares import CVESearch
 from os import listdir, walk
 
 import sublist3r, nmap, masscan
@@ -189,6 +190,7 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 		print("In else")
 		# results/[type]/[id]/[action]
 		if id is not None:
+			data = None
 			print(f"action: {action}")
 			print(f"id: {id}")
 			
@@ -275,13 +277,22 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 				except Exception as e:
 					print("Error in eyewitness")
 					print(e)
+			
+			# results/[type]/[id]/eyewitness
+			if action == "cve-search":
+				cve = CVESearch()
+				print('cveInfo')
+				# z = cve.browse('microsoft/')
+				z = cve.browse('cpe:/o:microsoft:windows')
+				print(z)
 
+				return HttpResponse(f"{z}")
 			# print("id: " + str(id))
 			tool_used = None
 
 			# results/[type]/[id]
 			if type == "subdomain-enum":
-				r = data = domain = None
+				r = domain = None
 				# print(f"type: {type}")
 				
 				# Read File
@@ -292,9 +303,8 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 							data = list(map(str, f.read().split()))
 							domain = ".".join(temp[1:-2])
 							tool_used = temp[-2]
-
+				
 				if data:
-
 					# print(f"data: {data}")
 					active_domains = 0
 					status = list()
@@ -351,7 +361,8 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 
 			if type == "port-scan":
 				output = None
-				hostname = None
+				hostname = domain = None
+				cmd = t = port_range = scan_info = os_detection_info = os_class = None
 				for i in onlyfiles:
 					temp = i.split('.')
 					if int(temp[0]) == int(id):
@@ -359,26 +370,44 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 							data = f.read()
 							domain = ".".join(temp[1:-2])
 							tool_used = temp[-2]
+							
 				if data:
 					output = json.loads(data)
 					# print(f"domain: {domain}")
 					try:
 						scan_info = output['scan'][domain]
 						hostname = scan_info['hostnames'][0]['name']
-						# print(hostname)
-						# print(json.dumps(output, indent=4))
 					except:
-						scan_info = None
+						pass
+						# scan_info = None
+						
+					try:
+						os_info = output['scan'][domain]['osmatch'][0]
+						os_name = os_info['name']
+						accuracy = os_info['accuracy']
+						os_detection_info = {
+							"os_name": os_name,
+							"accuracy": accuracy,
+						}
+						os_class = output['scan'][domain]['osmatch'][0]['osclass']
 
+					except:
+						pass
+						# os_detection_info = None
+						# os_class = None
+					try:
+						cmd = output['nmap']['command_line']
+						t = cmd.index("-p")
+						port_range = cmd[t + 3:].split()[0]
+					except:
+						pass
 
-				cmd = output['nmap']['command_line']
-				t = cmd.index("-p")
-				port_range = cmd[t + 3:].split()[0]
-				
 				context = {
 					"result": output,# if output else None,
 					"scan_info": scan_info,
 					"hostname": hostname,
+					"os_info": os_detection_info,
+					"os_class": os_class,
 					"port_range": port_range,
 					"id": id,
 					"domain": domain,

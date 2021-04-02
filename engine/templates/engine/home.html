@@ -10,7 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		{% block title %}
-			<title>Home</title>
+			<title>Home | bughunt3r</title>
 		{% endblock %}
 
 		{% block js %}
@@ -42,7 +42,7 @@
 				<h1 class="ui header center">bughunt3r</h1>
 				<input type="hidden" id="set_auth" data-url="{% url 'settings' %}#settings">
 				{% if last_result %}
-					<div class="ui raised {{ colors | random }} segment">
+					<div class="ui raised segment">
 						<h2 class="ui header center">Last Scan</h2>
 						<a href="{% url 'results' last_result.type last_result.timestamp %}">
 							<div>

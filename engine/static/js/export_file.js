@@ -1,12 +1,17 @@
-// function exportFile(id, domain) {
 function exportFile() {
-	// console.log(id)
-	// console.log(domain);
+	var c = "";
+	if (localStorage.getItem("theme") == "dark") {
+		c = "black";
+	}
+	// else {
+	// 	c = "";
+	// }
 	$('body').toast({
 		title: 'Preparing Download',
-		// message: 'Preparing Download',
 		showProgress: 'bottom',
-		classProgress: 'teal',
+		showIcon: "download",
+		class: c,
+		classProgress: "teal",
 		displayTime: 3500,
 	});
 	var url = $('#export').attr('data-url')

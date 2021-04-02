@@ -21,7 +21,7 @@
 				
 				<div class="ui raised {{ colors | random }} segment">
 					<br>
-					<h3>bughunt3r is just a pipeline of recon. bughunt3r would not have been possible without the following individuals/organizations.</h3>
+					<h3 class="center">bughunt3r is just a pipeline of recon. bughunt3r would not have been possible without the following individuals/organizations.</h3>
 					<br>
 					<div class="ui list left aligned">
 						<a class="item" target="_blank" href="https://github.com/OWASP/">
@@ -109,6 +109,10 @@
 				<br>
 				<div class="ui raised {{ colors | random }} segment">
 					<h1 class="ui header huge center">About the Author</h1>
+					<div class="ui horizontal divider">
+						<i class="users icon"></i>
+						Contributors
+					</div>
 					<a class="ui blue image label" href="https://github.com/wh0th3h3llam1" target="_blank">
 						<img src="{% static 'images/avatar.png' %}">
 						wh0am1
@@ -116,6 +120,7 @@
 					</a>
 					<br>
 					This framework is written by wh0am1
+					
 				</div>
 
 				<h1 class="ui header center">Your I.P. Address is : {{ ip_add }}</h1>

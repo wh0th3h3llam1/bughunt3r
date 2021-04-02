@@ -2,7 +2,34 @@
 	text-align: center;
 }
 
+a:hover {
+	color: unset;
+}
+
+
 a {
 	text-decoration: none;
-	color: initial;
+	color: unset;
+}
+
+.ui.table thead tr:first-child > th {
+	position: sticky !important;
+	top: 0px;
+	z-index: 2;
+}
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    opacity: 0;
+    display: none;
+    transition: all .50s ease-in-out;
+}
+
+.show-scrollTop {
+    display: flex;
+    z-index: 3;
+    opacity: 1;
+    transition: all .50s ease-in-out;
 }

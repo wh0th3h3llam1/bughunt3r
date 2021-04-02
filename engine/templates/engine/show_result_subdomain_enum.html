@@ -34,6 +34,7 @@
 				$(document).ready(function (){
 					$('table').tablesort();
 					console.log("Table sort loaded"); 
+					$('.ui.sticky').sticky();
 				});
 			</script>
 
@@ -112,6 +113,14 @@
 							<i class="images outline icon"></i>
 						</div>
 					</div>
+
+					<div class="ui teal animated fade button" tabindex="0" data-tooltip="Get Screenshot of all Subdomains">
+						<div class="visible content">Aquatone</div>
+						<div class="hidden content" onclick="aquatoneScanStarted();">
+							<input type="hidden" id="aquatone_btn" data-url="{% url 'results' 'subdomain-enum' id 'aquatone' %}">
+							<i class="images outline icon"></i>
+						</div>
+					</div>
 					
 					<h4 class="ui horizontal divider header">
 						<i class="bar chart icon"></i>
@@ -134,7 +143,7 @@
 									<tr>
 										<td class="center aligned">{{ forloop.counter }}</td>
 										<td class="center aligned" id="{{ forloop.counter }}">
-											<a target="_blank" href="http://{{ i }}">{{ i }}</a>
+											<a target="_blank" href="http://{{ i }}" id="{{ forloop.counter }}_a">{{ i }}</a>
 										</td>
 										<td class="center aligned">
 											<div class="ui {% if s.status|startswith:'2' %}green{% elif s.status|startswith:'3' %}yellow{% elif s.status|startswith:'4' %}red{% else %}orange{% endif %} circular label" data-tooltip="Response: {{ s.msg | default:'Unknown' }}">{{ s.status | default:"Unknown" }}</div>
@@ -145,7 +154,7 @@
 											<div class="ui green label">Green</div>
 										</td> -->
 										<td class="center aligned">
-											<button class="circular small ui icon button" onclick="copyToClip({{ forloop.counter }})" data-tooltip="Copy to Clipboard">
+											<button class="circular small ui icon button" onclick="copyToClip({{ forloop.counter }})" data-info="{{ i }}" data-tooltip="Copy to Clipboard">
 												<i class="icon clipboard"></i>
 											</button>
 										</td>
@@ -163,12 +172,16 @@
 									<th class="center aligned">Action</th>
 								</tr>
 							</thead>
+
 							<tbody>
 								{% for i in result %}
 									<tr>
 										<td class="center aligned">{{ forloop.counter }}</td>
 										<td class="center aligned" id="{{ forloop.counter }}">
-											<a target="_blank" href="http://{{ i }}">{{ i }}</a>
+											<a target="_blank" href="http://{{ i }}" id="{{ forloop.counter }}_a">
+												{{ i }}
+											</a>
+											<!-- <i class="linkify icon" onclick="location.href='http:\/\/{{ i }}'"></i> -->
 										</td>
 										<td class="center aligned">
 											<button class="circular small ui icon button" onclick="copyToClip({{ forloop.counter }})" data-tooltip="Copy to Clipboard">
@@ -188,7 +201,7 @@
 						<div class="visible content">Export Scan Result</div>
 						<div class="hidden content" onclick="exportFile();">
 							<input type="hidden" id="export" name="export" value="export" data-url="{% url 'export_scan_results' 'subdomain-enum' tool_used id %}">
-							<i class="file alternate outline icon"></i>
+							<i class="file export icon"></i>
 						</div>
 					</div>
 

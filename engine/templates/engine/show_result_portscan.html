@@ -18,6 +18,7 @@
 
 		{% block js %}
 			<script src="{% static 'js/show_modal.js' %}"></script>
+			<script src="{% static 'js/cve_search.js' %}"></script>
 			<script src="{% static 'js/export_file.js' %}"></script>
 			<script src="{% static 'js/raw_file.js' %}"></script>
 			<script src="{% static 'js/delete_scan.js' %}"></script>
@@ -96,13 +97,14 @@
 								<th class="center aligned">Other Info</th>
 								<!-- <th class="center aligned">Conf</th> -->
 								<th class="center aligned">CPE</th>
+								<!-- <th class="center aligned">Action</th> -->
 							</tr>
 						</thead>
 						<tbody>
 							{% for port, port_info in scan_info.tcp.items %}
 								<tr>
 									<td class="center aligned">{{ forloop.counter }}</td>
-									<td class="center aligned" id="{{ forloop.counter }}">{{ port }}</td>
+									<td class="center aligned" id="{{ forloop.counter }}_port">{{ port }}</td>
 									<td class="center aligned">
 										<div class="ui {% if port_info.state == 'open' %}green{% elif port_info.state == 'closed' %}red{% else %}yellow{% endif %} circular label">{{ port_info.state | default:"Unknown" }}</div>
 										<!-- {{ port_info.state }} -->
@@ -110,18 +112,31 @@
 									<td class="center aligned">
 										{{ port_info.name }}
 									</td>
-									<td class="center aligned">
-										{{ port_info.product }}
+									<td class="{% if not port_info.product %}red{% endif %} center aligned">
+										{{ port_info.product  | default:"Unknown" }}
 									</td>
-									<td class="center aligned">
+									<td class="{% if not port_info.version %}red{% endif %} center aligned">
 										{{ port_info.version | default:"Unkown" }}
 									</td>
-									<td class="center aligned">
+									<td class="{% if not port_info.extrainfo %}red{% endif %} center aligned">
 										{{ port_info.extrainfo | default:"Unknown" }}
 									</td>
-									<td class="center aligned">
-										{{ port_info.cpe }}
+									<td class="{% if not port_info.cpe %}red{% endif %} center aligned" id="{{ forloop.counter }}_cpe">
+										{{ port_info.cpe  | default:"Unknown" }}
 									</td>
+									<!-- <td class="center aligned">
+										<input type="hidden" name="cveInfo" value="{{ port_info.cpe }}">
+										<button 
+										class="ui circular mini basic icon button"
+										data-tooltip="Search for CVE"
+										id="{{ forloop.counter }}"
+										data-info="{{ port_info.cpe }}"
+										data-url="{% url 'results' 'port-scan' id 'cve-search' %}"
+										onclick="cveSearch({{ forloop.counter }});"
+										>
+										  <i class="binoculars icon"></i>
+										</button>
+									</td> -->
 									
 									<!-- {% for key, value in port_info.items %}
 										<td class="center aligned">
@@ -132,28 +147,104 @@
 							{% endfor %}
 						</tbody>
 					</table>
-					{% comment %}
-						
-					{% for keys, values in scan_info.tcp.items %}
-						Port: {{ keys }}
+
+					{% if os_info %}
+						<h4 class="ui horizontal divider header">
+							<i class="desktop icon"></i>
+							OS Detection
+						</h4>
+						<div class="ui raised {{ colors | random }} segment">
+							<h2 class="header center">OS Info</h2>
+							<b>OS Name:</b> {{ os_info.os_name }}
+							<br>
+							<b>Accuracy:</b> {{ os_info.accuracy }} %
+							<br>
+						</div>
+						{% comment %}
+						<table class="ui celled {{ colors | random }} sortable table">
+							<thead onclick="$('table').tablesort();">
+								<tr>
+									<th class="center aligned">No.</th>
+									<th class="center aligned">Port Number</th>
+									<th class="center aligned">Status</th>
+									<th class="center aligned">Service Running</th>
+									<th class="center aligned">Product Running</th>
+									<th class="center aligned">Version</th>
+									<th class="center aligned">Other Info</th>
+									<th class="center aligned">CPE</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for key, value in os_info.items %}
+									<tr>
+										<td class="center aligned">{{ forloop.counter }}</td>
+										<td class="center aligned"></td>
+										<td class="center aligned">
+											<div class="ui {% if port_info.state == 'open' %}green{% elif port_info.state == 'closed' %}red{% else %}yellow{% endif %} circular label">{{ port_info.state | default:"Unknown" }}</div>
+											<!-- {{ port_info.state }} -->
+										</td>
+										<td class="center aligned">
+											{{ port_info.name }}
+										</td>
+										<td class="{% if not port_info.product %}red{% endif %} center aligned">
+											{{ port_info.product  | default:"Unknown" }}
+										</td>
+										<td class="{% if not port_info.version %}red{% endif %} center aligned">
+											{{ port_info.version | default:"Unkown" }}
+										</td>
+										<td class="{% if not port_info.extrainfo %}red{% endif %} center aligned">
+											{{ port_info.extrainfo | default:"Unknown" }}
+										</td>
+										<td class="{% if not port_info.cpe %}red{% endif %} center aligned" id="{{ forloop.counter }}_cpe">
+											{{ port_info.cpe  | default:"Unknown" }}
+										</td>
+										<!-- <td class="center aligned">
+											<input type="hidden" name="cveInfo" value="{{ port_info.cpe }}">
+											<button 
+											class="ui circular mini basic icon button"
+											data-tooltip="Search for CVE"
+											id="{{ forloop.counter }}"
+											data-info="{{ port_info.cpe }}"
+											data-url="{% url 'results' 'port-scan' id 'cve-search' %}"
+											onclick="cveSearch({{ forloop.counter }});"
+											>
+											<i class="binoculars icon"></i>
+											</button>
+										</td> -->
+										
+										<!-- {% for key, value in port_info.items %}
+											<td class="center aligned">
+													{{ value | default:"None" }}
+											</td>
+										{% endfor %} -->
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+
+						{% endcomment %}
+						{{ os_class }}
+					{% endif %}
+						{% for keys, values in os_class.items %}
+						Keys: {{ keys }}
 						<br>
-						{% for k, v in values.items %}
+						Values: {{ values }}
+						<!-- {% for k, v in values.items %}
 							{{ k }}-----------{{ v }}
-						{% endfor %}
-						<br>
-						======================
-						<br>
-					{% endfor %}
-					
-					{% endcomment %}
-					<br>
-					<br>
-					
+							{% endfor %} -->
+							<br>
+							======================
+							<br>
+							{% endfor %}
+							<br>
+							<br>
+						
+						
 					<div class="ui primary animated fade button" tabindex="0">
 						<div class="visible content">Export Scan Result</div>
 						<div class="hidden content" onclick="exportFile();">
 							<input type="hidden" id="export" name="export" value="export" data-url="{% url 'export_scan_results' 'port-scan' tool_used id %}">
-							<i class="file alternate outline icon"></i>
+							<i class="file export icon"></i>
 						</div>
 					</div>
 
