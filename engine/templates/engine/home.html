@@ -15,13 +15,13 @@
 
 		{% block js %}
 			<script src="{% static 'js/setup_auth.js' %}"></script>
-			<script src="{% static 'js/tandc.js' %}"></script>
+			<!-- <script src="{% static 'js/tandc.js' %}"></script> -->
 
-			<script>
+			<!-- <script>
 				$(document).ready(function (){
 					termsAndConditions();
 				});
-			</script>
+			</script> -->
 
 			<!-- {% if auth_setup is not True %} -->
 				<!-- <script>
@@ -40,7 +40,7 @@
 			<main class="ui container">
 				<br>
 				<h1 class="ui header center">bughunt3r</h1>
-				<input type="hidden" id="set_auth" data-url="{% url 'settings' %}#settings">
+				<!-- <input type="hidden" id="set_auth" data-url="{% url 'settings' %}#settings"> -->
 				{% if last_result %}
 					<div class="ui raised segment">
 						<h2 class="ui header center">Last Scan</h2>
@@ -87,7 +87,7 @@
 					</div>
 				</div>
 
-				<div class="ui modal">
+				<!-- <div class="ui modal">
 					<div class="header">
 					  Terms And Conditions
 					</div>
@@ -99,7 +99,7 @@
 					<div class="actions">
 						<div class="ui approve green button">I accept</div>
 					</div>
-				  </div>
+				</div> -->
 			</main>
 		{% endblock %}
 	</body>

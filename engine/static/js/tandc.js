@@ -1,22 +1,22 @@
 function termsAndConditions() {
 	if (localStorage.getItem("terms_conditions") != "yeah") {
 		$('.ui.modal')
-		.modal(
-			// 'setting', 'closable', false
-			{
-				closable: false,
-				onApprove : function() {
-					localStorage.setItem("terms_conditions", "yeah")
-					// setupAuth()
-				}
+		.modal({
+			closable: false,
+			onApprove : function() {
+				localStorage.setItem("terms_conditions", "yeah")
+				setupAuth();
 			}
-		)
-		.modal('show');
+		}).modal('show');
+	}
+	else {
+		setupAuth();
 	}
 }
 
 function setupAuth() {
-	if (localStorage.getItem("gui_choice") != "nah") {
+	// if (localStorage.getItem("gui_choice") != "nah") {
+	if (sessionStorage.getItem("gui_choice") != "nah") {
 		$('body')
 		.toast({
 			title: 'Set Up GUI Authentication',
@@ -40,7 +40,8 @@ function setupAuth() {
 					icon: 'close',
 					class: 'icon red',
 					click: function() {
-						localStorage.setItem("gui_choice", "nah")
+						// localStorage.setItem("gui_choice", "nah")
+						sessionStorage.setItem("gui_choice", "nah")
 					}
 				}
 			]

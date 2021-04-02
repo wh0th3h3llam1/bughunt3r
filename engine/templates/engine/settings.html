@@ -178,23 +178,24 @@
 					Danger Zone
 				</h4>
 				<br>
+
 				<!-- Delete Scan -->
 				<div class="ui raised red segment">
 					<h2 class="ui header center">Delete All Scan Results</h2>
+					<div class="center">
+						<button type="submit" id="delete_all_subdomain_scan" class="ui yellow button" data-url="{% url 'settings' %}">Delete All Subdomain Scans</button>
 
-					<button type="submit" id="delete_all_subdomain_scan" class="ui yellow button" data-url="{% url 'settings' %}">Delete All Subdomain Scan</button>
-					<br><br>
-					<button type="submit" id="delete_all_port_scan" class="ui orange button" data-url="{% url 'settings' %}">Delete All Port Scan</button>
-					<br><br>
-
-					<div class="ui red animated fade button" tabindex="0">
-						<div class="visible content">Delete All Scan</div>
-						<div class="hidden content" onclick="showModal();">
-							<i class="trash icon"></i>
+						<button type="submit" id="delete_all_port_scan" class="ui orange button" data-url="{% url 'settings' %}">Delete All Port Scans</button>
+						
+						<div class="ui red animated fade button" tabindex="0">
+							<div class="visible content">Delete All Scans</div>
+							<div class="hidden content" onclick="showModal();">
+								<i class="trash icon"></i>
+							</div>
 						</div>
 					</div>
-	
-					<div class="ui modal">
+						
+						<div class="ui modal">
 						<i class="close icon"></i>
 						<div class="header">
 							Confirm Delete
