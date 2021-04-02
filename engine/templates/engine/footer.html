@@ -1,3 +1,5 @@
+{% load static %}
+
 <!-- <div class="ui borderless fluid five item stackable menu">
 	<div class="header item">
 		<i class="bug icon"></i>
@@ -47,6 +49,16 @@
 	</div>
 </div> -->
 
+{% url 'home' as hm %}
+{% url 'subdomain-enum' as se %}
+{% url 'port-scan' as pos %}
+{% url 'results' as re %}
+{% url 'results' 'all' as reall %}
+{% url 'results' 'subdomain-enum' as rese %}
+{% url 'results' 'port-scan' as reps %}
+{% url 'about' as ab %}
+{% url 'settings' as set %}
+
 <br>
 <div class="ui stackable relaxed equal width equal height grid">
 	<div class="column center">
@@ -54,18 +66,20 @@
 			<i class="bug icon"></i>
 			Bughunt3r
 		</h2>
-		<div class="ui link list">
+		<!-- div. -->
+		<!-- <div class="ui link list">
 			<a class="item">Cashmere</a>
 			<a class="item">Linen</a>
 			<a class="item">Cotton</a>
 			<a class="item">Viscose</a>
-		</div>
+		</div> -->
+		
 	</div>
 	<div class="column center">
 		<h2 class="ui header">Perform Scan</h2>
 		<div class="ui link list">
-			<a class="item">Subdomain</a>
-			<a class="item">Port</a>
+			<a class="item" href="{{ se }}" >Subdomain</a>
+			<a class="item" href="{{ pos }}" >Port</a>
 		</div>
 	</div>
 	<div class="column center" >
@@ -79,9 +93,9 @@
 	<div class="column center">
 		<h2 class="ui header">Results</h2>
 		<div class="ui link list">
-			<a class="item">All Results</a>
-			<a class="item">Subdomain Enumeration</a>
-			<a class="item">Port Scan</a>
+			<a class="item" href="{{ reall }}" >All Results</a>
+			<a class="item" href="{{ rese }}" >Subdomain Enumeration</a>
+			<a class="item" href="{{ reps }}" >Port Scan</a>
 		</div>
 	</div>
 	<div class="column center">

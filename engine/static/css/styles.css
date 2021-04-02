@@ -12,6 +12,10 @@ a {
 	color: unset;
 }
 
+.ui.table {
+    table-layout: fixed;
+}
+
 .ui.table thead tr:first-child > th {
 	position: sticky !important;
 	top: 0px;
