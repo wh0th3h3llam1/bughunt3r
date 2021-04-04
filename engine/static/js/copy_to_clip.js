@@ -1,6 +1,6 @@
-function trim(str) {
-	return str.replace(/^\s+|\s+$/g,"");
-}
+// function trim(str) {
+// 	return str.replace(/^\s+|\s+$/g,"");
+// }
 
 function copyToClip(id) {
 	var dom = $("#" + id + "_a").html();
@@ -28,7 +28,7 @@ function copyToClip(id) {
 
 function copy(text) {
 	var input = document.createElement('input');
-	input.setAttribute('value', trim(text));
+	input.setAttribute('value', text.trim());
 	document.body.appendChild(input);
 	input.select();
 
