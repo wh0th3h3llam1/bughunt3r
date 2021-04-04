@@ -12,6 +12,7 @@
 	{% url 'results' as re %}
 	{% url 'about' as ab %}
 	{% url 'settings' as set %}
+	{% url 'readme' as rm %}
 	<a class="{% if request.path == hm %}active{% endif %} item" href="{{ hm }}">
 		Home
 	</a>
@@ -38,8 +39,13 @@
 					</div>
 				</div>
 				<div class="item">
-					<a class="{% if request.path == ab %}active{% endif %}" href="{{ set }}">
+					<a class="{% if request.path == set %}active{% endif %}" href="{{ set }}">
 						Settings
+					</a>
+				</div>
+				<div class="item">
+					<a class="{% if request.path == rm %}active{% endif %}" href="{{ rm }}">
+						README.md
 					</a>
 				</div>
 				<!-- <div class="item">Logout</div> -->

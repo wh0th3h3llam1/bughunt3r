@@ -17,6 +17,7 @@ import _pickle as pickle
 import hashlib, shutil
 import urllib.request
 import glob, json
+import markdown
 
 # Create your views here.
 
@@ -122,13 +123,17 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 				# subfinder
 				elif tool == "subfinder":
 					subdomains = os.system(f'{CWD}\\engine\\templates\\tools\\subfinder\\subfinder.exe -d {url} -o {CWD}{file_name} -silent')
+					
+				# assetfinder
+				elif tool == "assetfinder":
+					subdomains = os.system(f'{CWD}\\engine\\templates\\tools\\assetfinder\\assetfinder.exe -d {url} >> {CWD}{file_name}')
 
 				# amass
 				else:
 					subdomains = os.system(f'{CWD}\\engine\\templates\\tools\\amass\\amass.exe enum -d {url} -o {CWD}{file_name} -silent')
 			
 			except Exception as e:
-				print("Error SCanning subdommains")
+				print("Error Scanning subdommains")
 				print(str(e))
 
 			all_results = get_results(get_files(type=scan_type))
@@ -647,6 +652,21 @@ def settings(request):
 		"credentials": credentials,
 	}
 	return render(request, 'engine/settings.html', context)
+
+
+def readme(request):
+	with open(CWD + "\README.md", "r") as f:
+		data = f.read()
+	
+	md = markdown.Markdown()
+	data = md.convert(data)
+	print(f"data: {data}")
+
+	context = {
+		"data" : data,
+		"colors": COLORS
+	}
+	return render(request, 'engine/show_readme.html', context)
 
 
 def get_files(type=None) -> list:

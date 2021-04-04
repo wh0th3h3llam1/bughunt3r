@@ -16,8 +16,8 @@
 
 		{% url 'subdomain-enum' as se %}
 		
-		{% block styles %}
-			<link rel="stylesheet" type="text/css" href="{% static 'css/lightbox.css' %}">
+		{% block css %}
+			<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/lightbox.css' %}"> -->
 		{% endblock %}
 			
 		{% block js %}
@@ -26,7 +26,7 @@
 			<script src="{% static 'js/export_file.js' %}"></script>
 			<script src="{% static 'js/raw_file.js' %}"></script>
 			<script src="{% static 'js/delete_scan.js' %}"></script>
-			<!-- <script src="{% static 'js/copy_to_clip.js' %}"></script> -->
+			<script src="{% static 'js/copy_to_clip.js' %}"></script>
 			<script src="{% static 'js/scan_started.js' %}"></script>
 			<script src="{% static 'js/lightbox.js' %}"></script>
 			<script src="{% static 'semantic/tablesort.js' %}"></script>
@@ -231,12 +231,12 @@
 	
 				<div class="ui red animated fade button" tabindex="0">
 					<div class="visible content">Delete Scan</div>
-					<div class="hidden content" onclick="showModal();">
+					<div class="hidden content" onclick="showDeleteModal();">
 						<i class="trash icon"></i>
 					</div>
 				</div>
 
-				<div class="ui modal">
+				<div class="ui modal delete">
 					<i class="close icon"></i>
 					<div class="header">
 						Confirm Delete
@@ -259,7 +259,6 @@
 
 			</main>
 			<br><br>
-			<script src="{% static 'js/copy_to_clip.js' %}"></script>
 		{% endblock %}
 
 		</body>

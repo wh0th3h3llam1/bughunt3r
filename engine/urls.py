@@ -10,6 +10,7 @@ urlpatterns = [
 	url(r'^subdomain-enum/$', views.subdomain, name='subdomain-enum'),
 	url(r'^port-scan/$', views.portscan, name='port-scan'),
 	url(r'^settings/$', views.settings, name='settings'),
+	url(r'^readme/$', views.readme, name='readme'),
 	
 
 	path('results/<str:type>/<int:id>/<str:action>/<detailed_report>', views.results, name='results'),

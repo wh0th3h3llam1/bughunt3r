@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     # user apps
     'engine',
     'sublist3r',
+
+    'markdown',
 ]
 
 MIDDLEWARE = [

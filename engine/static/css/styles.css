@@ -1,5 +1,5 @@
 main {
-    min-height: 555px !important;
+	min-height: 555px !important;
 }
 
 .center {
@@ -10,34 +10,33 @@ a:hover {
 	color: unset;
 }
 
-
 a {
 	text-decoration: none;
 	color: unset;
 }
 
 .ui.table {
-    table-layout: fixed;
+	/* table-layout: fixed; */
 }
 
-.ui.table thead tr:first-child > th {
+.ui.table thead tr:first-child>th {
 	position: sticky !important;
 	top: 0px;
 	z-index: 2;
 }
 
 .scroll-to-top {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    opacity: 0;
-    display: none;
-    transition: all .50s ease-in-out;
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	opacity: 0;
+	display: none;
+	transition: all .50s ease-in-out;
 }
 
 .show-scrollTop {
-    display: flex;
-    z-index: 3;
-    opacity: 1;
-    transition: all .50s ease-in-out;
+	display: flex;
+	z-index: 3;
+	opacity: 1;
+	transition: all .50s ease-in-out;
 }

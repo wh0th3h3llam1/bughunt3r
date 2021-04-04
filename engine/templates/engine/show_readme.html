@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		{% block title %}
+			<title>Settings</title>
+		{% endblock %}
+
+		{% block js %}
+			<script src="{% static 'js/show_modal.js' %}"></script>
+			<script src="{% static 'js/generate_password.js' %}"></script>
+			<script src="{% static 'js/toggle_password.js' %}"></script>
+			<script>
+				function show_dropdown() {
+					$('.ui.dropdown').dropdown('show');
+				}
+				$(document).ready(function (){
+					$('#show_password').prop('checked', false);
+				});
+			</script>
+		{% endblock %}
+
+		{% block tandc %}
+		{% endblock %}
+		
+	</head>
+
+	<body>
+
+		{% block main %}
+			<main class="ui container">
+				<br>
+				<h1 class="ui header">README.md</h1>
+				<div class="ui divider"></div>
+				<div class="ui raised violet segment">
+					<div class="ui text">
+					{{ data |safe }}
+					</div>
+				</div>
+			</main>
+		{% endblock %}
+	</body>
+
+</html>
