@@ -97,7 +97,7 @@
 								<th class="center aligned">Other Info</th>
 								<!-- <th class="center aligned">Conf</th> -->
 								<th class="center aligned">CPE</th>
-								<!-- <th class="center aligned">Action</th> -->
+								<th class="center aligned">Action</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -124,7 +124,7 @@
 									<td class="right marked {% if not port_info.cpe %}red{% endif %} center aligned" id="{{ forloop.counter }}_cpe">
 										{{ port_info.cpe  | default:"Unknown" }}
 									</td>
-									<!-- <td class="center aligned">
+									<td class="center aligned">
 										<input type="hidden" name="cveInfo" value="{{ port_info.cpe }}">
 										<button 
 										class="ui circular mini basic icon button"
@@ -136,7 +136,7 @@
 										>
 										  <i class="binoculars icon"></i>
 										</button>
-									</td> -->
+									</td>
 									
 									<!-- {% for key, value in port_info.items %}
 										<td class="center aligned">
@@ -228,7 +228,7 @@
 						</div>
 					{% endif %}
 
-
+					{% comment %}
 						{% for keys, values in os_class.items %}
 						Keys: {{ keys }}
 						<br>
@@ -242,7 +242,7 @@
 							{% endfor %}
 							<br>
 							<br>
-						
+					{% endcomment %}
 						
 					<div class="ui primary animated fade button" tabindex="0">
 						<div class="visible content">Export Scan Result</div>

@@ -23,16 +23,26 @@
 
 				<div class="ui placeholder segment">
 					<div class="ui icon header">
-					<i class="searchengin icon"></i>
-					Page Not Found
-					</div>
-					<div class="ui primary animated button" tabindex="0">
-						<div class="visible content">Scan Subdomain</div>
-						<div class="hidden content" onclick="location.href='{% url 'subdomain-enum' %}'">
-							<i class="right arrow icon"></i>
-						</div>
+						<i class="exclamation triangle icon"></i>
+						Page Not Found
 					</div>
 				</div>
+				<div class="ui yellow segment">
+					<h2 class="ui header center">Delete All Scan Results</h2>
+					<div class="center">
+						<div class="ui blue animated fade button" tabindex="0">
+							<div class="visible content">Scan Subdomains</div>
+							<div class="hidden content" onclick="location.href='{% url 'subdomain-enum' %}'">
+								<i class="arrow right icon"></i>
+							</div>
+						</div>
+						<div class="ui red animated fade button" tabindex="0">
+							<div class="visible content">Scan Ports</div>
+							<div class="hidden content" onclick="location.href='{% url 'port-scan' %}'">
+								<i class="arrow right icon"></i>
+							</div>
+						</div>
+					</div>
 
 			</main>
 		{% endblock %}

@@ -1,10 +1,1 @@
-{
-	"bughunt3r": {
-		"config": {
-			"user_name": "",
-			"password": "",
-			"algorithm": "",
-			"created": ""
-		}
-	}
-}
+{"bughunt3r": {"config": {"user_name": "root", "password": "e454ae1cc3ba6795d4423be232a1112845d954f3392df03818999573b5076c63", "algorithm": "sha256", "recovery_email": "", "created_on": "09/04/2021 14:43:07", "updated_on": "09/04/2021 14:43:07"}}}

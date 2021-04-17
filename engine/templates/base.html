@@ -30,11 +30,22 @@
 
 		{% block tandc %}
 			<script src="{% static 'js/tandc.js' %}"></script>
-			<script>
-				$(document).ready(function (){
-					termsAndConditions();
-				});
-			</script>
+			{% if auth_setup %}
+				<script>
+					$(document).ready(function (){
+						termsAndConditions("setup");
+					});
+				</script>
+				
+			{% else %}
+				<script>
+					$(document).ready(function (){
+						termsAndConditions("");
+					});
+				</script>
+				
+			{% endif %}
+
 		{% endblock %}
 		
 		{% block js %}

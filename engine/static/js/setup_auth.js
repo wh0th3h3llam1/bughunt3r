@@ -31,3 +31,48 @@ function setupAuth() {
 		});
 	}
 }
+
+function setupAuthentication(event) {
+	
+	$('.ui.green.button').addClass('double loading');
+
+	var user_name = $('#user_name').val();
+	var passwd = $('#passwd').val();
+	
+	if (validateUserName(user_name) && validatePassword(passwd)) {
+		// var link = $('#setup').attr('data-url')
+		// console.log(link);
+		// document.location.href = link;
+	}
+	else {
+		event.preventDefault();
+	}
+}
+
+function validateUserName(user_name) {
+	if(user_name === "")
+	{
+		console.log("Empty");
+		$('body').toast({
+			class: 'error',
+			message: `Please enter User Name`
+		});
+		$('.ui.green.button').removeClass('double loading');
+		return false
+	}
+	return true
+}
+
+function validatePassword(passwd) {
+	if(passwd === "")
+	{
+		console.log("Empty");
+		$('body').toast({
+			class: 'error',
+			message: `Please enter Password`
+		});
+		$('.ui.green.button').removeClass('double loading');
+		return false
+	}
+	return true
+}

@@ -42,6 +42,13 @@
 							<a href="{% url 'results' 'subdomain-enum' res.id %}">
 								<div class="ui selection animated list">
 									<div class="item">
+										<div class="ui 
+										{% if res.tool == 'sublist3r' %}blue{% endif %}
+										{% if res.tool == 'subfinder' %}red{% endif %} 
+										{% if res.tool == 'amass' %}orange{% endif %} 
+										{% if res.tool == 'assetfinder' %}green{% endif %} 
+										{% if res.tool == 'findomain' %}yellow{% endif %} 
+										horizontal label">{{ res.tool }}</div>
 										<div class="content">
 											<div class="header">
 												<h3>{{ res.domain | default:"Error, Please Delete this" }}</h3>

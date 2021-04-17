@@ -42,7 +42,7 @@ function validatePortRange() {
 		console.log("Empty Port Range");
 		$('body').toast({
 			class: 'error',
-			message: `Please Enter Port Range`
+			message: `Please Enter Port Number or Port Range`
 		});
 		$('#port_field').addClass('error');
 		return false
@@ -54,11 +54,16 @@ function validatePortRange() {
 			var p = port_range.split("-")
 			p1 = p[0];
 			p2 = p[1];
-			if (validateNum(p1, 1, 65535) && validateNum(p2, 1, 65535) && p1 < p2) {
-				// $('body').toast({
-				// 	class: 'success',
-				// 	message: `Port Range Valid`
-				// });
+			if (validateNum(p1, 1, 65535) && validateNum(p2, 1, 65535)) {
+				if (!(p1 < p2)) {
+					$('body').toast({
+						class: 'error',
+						title: `Port Range Invalid`,
+						message: `It should be in a format x-y and x must be less than y`
+					});
+					return false
+					
+				}
 				$('#port_field').removeClass('error');
 				return true
 			}
@@ -66,20 +71,23 @@ function validatePortRange() {
 			else {
 				$('body').toast({
 					class: 'error',
-					message: `Port Range Invalid`
+					title: `Port Range Invalid`,
+					message: `Port Range must be between 1 and 65535`
 				});
 				$('#port_field').addClass('error');
 				return false
 			}
 		}
 
+		// Port Number
 		else {
 			console.log("In Else else");
 			var x = validateNum(port_range, 1, 65535);
 			if (!x) {
 				$('body').toast({
 					class: 'error',
-					message: `Port Range Invalid`
+					title: `Port Number Invalid`,
+					message: `Port Number must be between 1 and 65535`
 				});
 				$('#port_field').addClass('error');
 				return false

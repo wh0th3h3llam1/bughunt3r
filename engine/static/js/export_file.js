@@ -11,7 +11,7 @@ function exportFile() {
 		showProgress: 'bottom',
 		showIcon: "download",
 		class: c,
-		classProgress: "teal",
+		classProgress: "orange",
 		displayTime: 3500,
 	});
 	var url = $('#export').attr('data-url')

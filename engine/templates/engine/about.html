@@ -9,15 +9,15 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
 		{% block title %}
-			<title>About</title>
+			<title>About | bughunt3r</title>
+		{% endblock %}
+		
+		{% block js %}
+			<script src="js/on_click_link.js"></script>
 		{% endblock %}
 
-		<!-- <script>
-			$(document).ready(function (){
-				termsAndConditions();
-			});
-		</script> -->
 	</head>
+	
 	<body>
 		{% block main %}
 			<main class="ui container">
@@ -26,10 +26,14 @@
 				<br>
 				
 				<div class="ui raised {{ colors | random }} segment">
-					<br>
+					<h1 class="ui header center">Special Thanks</h1>
 					<h3 class="center">bughunt3r is just a pipeline of recon. bughunt3r would not have been possible without the following individuals/organizations.</h3>
-					<br>
 					<div class="ui list left aligned">
+						<div class="ui horizontal divider">
+							<i class="users icon"></i>
+							Subdomain Enumeration
+						</div>
+						
 						<a class="item" target="_blank" href="https://github.com/OWASP/">
 							<i class="right triangle icon"></i>
 							<div class="content">
@@ -62,6 +66,12 @@
 								</div>
 							</div>
 						</a>
+
+						<div class="ui horizontal divider">
+							<i class="users icon"></i>
+							Port Scan
+						</div>
+						
 						<a class="item" target="_blank" href="https://nmap.org">
 							<i class="right triangle icon"></i>
 							<div class="content">
@@ -78,6 +88,15 @@
 								</div>
 							</div>
 						</a>
+						<a class="item" target="_blank" href="https://github.com/RustScan/RustScan">
+							<i class="right triangle icon"></i>
+							<div class="content">
+								<div class="header">
+								RustScan
+								</div>
+							</div>
+						</a>
+						<!-- 
 						<a class="item" target="_blank" href="https://github.com/lc">
 							<i class="right triangle icon"></i>
 							<div class="content">
@@ -91,14 +110,14 @@
 							<div class="content">
 								<div class="header">
 								hakrawler : Luke Stephens
-								</div>
+							</div>
 							</div>
 						</a>
 						<a class="item" target="_blank" href="https://github.com/maurosoria/dirsearch">
 							<i class="right triangle icon"></i>
 							<div class="content">
 								<div class="header">
-								dirsearch: maurosoria
+									dirsearch: maurosoria
 								</div>
 							</div>
 						</a>
@@ -106,10 +125,11 @@
 							<i class="right triangle icon"></i>
 							<div class="content">
 								<div class="header">
-								subjack haccer
+									subjack haccer
 								</div>
 							</div>
 						</a>
+						-->
 					</div>
 				</div>
 				<br>
@@ -119,17 +139,48 @@
 						<i class="users icon"></i>
 						Contributors
 					</div>
-					<a class="ui blue image label" href="https://github.com/wh0th3h3llam1" target="_blank">
-						<img src="{% static 'images/avatar.png' %}">
-						wh0am1
-						<div class="detail">Author</div>
-					</a>
-					<br>
-					This framework is written by wh0am1
-					
+					<div class="ui middle aligned selection animated list contributors">
+						<!-- <a class="ui blue image label" href="https://github.com/wh0th3h3llam1" target="_blank">
+							<img src="{% static 'images/male_avatar.png' %}">
+							wh0am1
+							<div class="detail">Author</div>
+						</a>
+						<a class="ui orange image label" target="_blank">
+							<img src="{% static 'images/male_avatar_glasses.png' %}">
+							Uday Patel
+							<div class="detail">Mentor</div>
+						</a> -->
+						<div class="item" onclick="github();">
+							<img class="ui avatar image" src="{% static 'images/male_avatar.png' %}">
+							<div class="content">
+								<div class="header">wh0am1</div>
+								Author
+							</div>
+						</div>
+						<div class="item">
+							<img class="ui avatar image" src="{% static 'images/male_avatar_glasses.png' %}">
+							<div class="content">
+								<div class="header">Uday Patel</div>
+								Mentor
+							</div>
+						</div>
+					</div>
 				</div>
+				<!-- 
+				<p>
+					<div>
+						Icons made by
+						<a href="https://www.freepik.com" title="Freepik">
+							Freepik
+						</a>
+						from
+						<a href="https://www.flaticon.com/" title="Flaticon">
+							www.flaticon.com
+						</a>
+					</div>
+				</p> -->
 
-				<h1 class="ui header center">Your I.P. Address is : {{ ip_add }}</h1>
+				<!-- <h1 class="ui header center">Your I.P. Address is : {{ ip_add }}</h1> -->
 				<br>
 			</main>
 		{% endblock %}

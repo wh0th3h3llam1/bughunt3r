@@ -50,7 +50,11 @@
 							<a href="{% url 'results' 'port-scan' res.id %}">
 								<div class="ui middle aligned selection animated list">
 									<div class="item">
-										<div class="ui {{ colors | random }} horizontal label">{{ res.tool }}</div>
+										<div class="ui 
+										{% if res.tool == 'nmap' %}blue{% endif %}
+										{% if res.tool == 'masscan' %}red{% endif %} 
+										{% if res.tool == 'threader3000' %}orange{% endif %} 
+										horizontal label">{{ res.tool }}</div>
 										<div class="content">
 											<div class="header">
 												<h3>{{ res.domain | default:"Error, Please Delete this" }}</h3>

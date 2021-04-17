@@ -9,7 +9,6 @@ urlpatterns = [
 	url(r'^home/$', views.home, name='home'),
 	url(r'^subdomain-enum/$', views.subdomain, name='subdomain-enum'),
 	url(r'^port-scan/$', views.portscan, name='port-scan'),
-	url(r'^settings/$', views.settings, name='settings'),
 	url(r'^readme/$', views.readme, name='readme'),
 	
 
@@ -24,15 +23,17 @@ urlpatterns = [
 	
 	url(r'^results/$', views.results, name='results'),
 
-	url(r'^find-subdomains/$', views.findSubdomains, name='find-subdomains'),
-
 	url(r'^about/$', views.about, name='about'),
 	
+	path('settings/<delete>/<str:type>/', views.settings, name='settings'),
+	url(r'^settings/$', views.settings, name='settings'),
+
 	url(r'^test/$', views.test, name='test'),
 
 	path('export_scan_results/<str:scan_type>/<str:tool>/<int:id>', views.export_scan_results, name='export_scan_results'),
 	path('raw_file/<str:scan_type>/<str:tool>/<int:id>', views.raw_file, name='raw_file'),
 
+	url(r'', views.not_found, name='not_found')
 	# path('results/<str:type>/<int:id>/<delete>', views.results, name='results'),
 	# path('results/<str:type>/<int:id>/<active>', views.results, name='results'),
 ]

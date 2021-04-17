@@ -13,6 +13,7 @@ from os import listdir, walk
 import sublist3r, nmap, masscan
 import http.client as httplib
 import requests, os, time
+import logging, traceback
 import _pickle as pickle
 import hashlib, shutil
 import urllib.request
@@ -27,6 +28,8 @@ COLORS = ['red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet',
 AUTH_CONFIG = "auth\config.json"
 AUTH_CONFIG_PATH = f"{CWD}\engine\static\{AUTH_CONFIG}"
 
+SCAN_RESULTS = "\engine\static\scan_results"
+
 
 def auth():
 	if exists(AUTH_CONFIG_PATH):
@@ -37,6 +40,7 @@ def auth():
 		if not data:
 			print("file empty")
 			return False
+
 		else:
 			conf = json.loads(data)
 			cred = conf['bughunt3r']['config']
@@ -69,9 +73,9 @@ def home(request):
 	
 	
 	if auth():
-		auth_setup= True
+		auth_setup = True
 	else:
-		auth_setup= False
+		auth_setup = False
 	print(f"auth_setup {auth_setup}")
 
 	scan_all = len(get_results(get_files()))
@@ -81,7 +85,7 @@ def home(request):
 	context = {
 		"last_result": res,
 		"colors": COLORS,
-		"auth_setup": True,
+		"auth_setup": auth_setup,
 		"scan_all": scan_all,
 		"scan_subdomain": scan_subdomain,
 		"scan_port": scan_port,
@@ -92,7 +96,7 @@ def home(request):
 # def results(request, type=None, id=None, delete=None, active=None):
 def results(request, type=None, id=None, action=None, detailed_report=None):
 	print("In Results")
-	files_path = CWD + "\engine\static\scan_results"
+	files_path = CWD + SCAN_RESULTS
 	try:
 		onlyfiles = [f for f in listdir(files_path) if isfile(join(files_path, f))]
 	
@@ -110,10 +114,8 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 			scan_type = 'subdomain-enum'
 			timestamp = int(datetime.timestamp(datetime.now()))
 			
-			file_name = f"\engine\static\scan_results\{timestamp}.{url}.{tool}.{scan_type}"
+			file_name = f"{SCAN_RESULTS}\{timestamp}.{url}.{tool}.{scan_type}"
 			f = open(CWD + file_name, "w+")
-			# with open(CWD + file_name, "w+") as f:
-				# pass
 			
 			try:
 				# sublist3r
@@ -137,7 +139,14 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 				print(str(e))
 
 			all_results = get_results(get_files(type=scan_type))
+
+			if auth():
+				auth_setup = True
+			else:
+				auth_setup = False
+			
 			context = {
+				"auth_setup": auth_setup,
 				"all_results": all_results[::-1],
 				"scan_type": scan_type,
 				'colors': COLORS
@@ -155,7 +164,7 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 			print(f'tool: {tool}')
 			timestamp = int(datetime.timestamp(datetime.now()))
 			
-			file_name = f"\engine\static\scan_results\{timestamp}.{url}.{tool}.{scan_type}"
+			file_name = f"{SCAN_RESULTS}\{timestamp}.{url}.{tool}.{scan_type}"
 			
 			if tool == "nmap":
 				print("nmap scan started")
@@ -178,7 +187,14 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 				
 			# all_results = get_results(get_files(type=scan_type))
 			all_results = get_results(get_files())
+
+			if auth():
+				auth_setup = True
+			else:
+				auth_setup = False
+			
 			context = {
+				"auth_setup": auth_setup,
 				"all_results": all_results[::-1],
 				"scan_type": scan_type,
 				'colors': COLORS
@@ -188,7 +204,7 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 			return render(request, 'engine/results_all.html', context)
 		
 		else:
-			print("ERROR in RESULTS if type - subdomain/port")
+			print("ERROR in RESULTS : none of type - subdomain/port-scan")
 	
 	# results/**
 	else:
@@ -215,7 +231,14 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 				
 				finally:
 					all_results = get_results(get_files(type=type))
+
+					if auth():
+						auth_setup = True
+					else:
+						auth_setup = False
+					
 					context = {
+						"auth_setup": auth_setup,
 						"all_results": all_results[::-1],
 						"message": message,
 						"scan_type": type,
@@ -224,6 +247,7 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 
 					if type == "subdomain-enum":
 						return render(request, 'engine/results_subdomain_enum.html', context)
+					
 					else:
 						return render(request, 'engine/results_portscan.html', context)
 
@@ -271,7 +295,14 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 					# for i in local_images:
 					# 	li.append("images" + i)
 					# print(final)
+
+					if auth():
+						auth_setup = True
+					else:
+						auth_setup = False
+					
 					context = {
+						"auth_setup": auth_setup,
 						"images": local_images,
 						"id": id,
 						"colors": COLORS,	
@@ -342,7 +373,14 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 						active = None
 						r = data
 					
+
+					if auth():
+						auth_setup = True
+					else:
+						auth_setup = False
+					
 					context = {
+						"auth_setup": auth_setup,
 						"result": r if r else data,
 						"size": len(data) if data else 0,
 						"active": active,
@@ -355,10 +393,18 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 					}
 				
 				else:
+
+					if auth():
+						auth_setup = True
+					else:
+						auth_setup = False
+					
 					context = {
+						"auth_setup": auth_setup,
 						"result": "empty",
 						"id": id,
-						"colors": COLORS,	
+						"tool": tool_used,
+						"colors": COLORS,
 						# "dt": datetime.fromtimestamp(int(id))
 					}
 
@@ -407,7 +453,14 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 					except:
 						pass
 
+
+				if auth():
+					auth_setup = True
+				else:
+					auth_setup = False
+
 				context = {
+					"auth_setup": auth_setup,
 					"result": output,# if output else None,
 					"scan_info": scan_info,
 					"hostname": hostname,
@@ -429,7 +482,14 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 			if type == "subdomain-enum":
 
 				all_results = get_results(get_files(type='subdomain-enum'))
+
+				if auth():
+					auth_setup = True
+				else:
+					auth_setup = False
+				
 				context = {
+					"auth_setup": auth_setup,
 					"all_results": all_results[::-1],
 					"scan_type": type,
 					'colors': COLORS
@@ -439,7 +499,14 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 
 			elif type == "port-scan":
 				all_results = get_results(get_files(type=type))
+
+				if auth():
+					auth_setup = True
+				else:
+					auth_setup = False
+				
 				context = {
+					"auth_setup": auth_setup,
 					"all_results": all_results[::-1],
 					"scan_type": type,
 					'colors': COLORS
@@ -450,7 +517,14 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 			elif type == "all":
 
 				all_results = get_results(get_files())
+
+				if auth():
+					auth_setup = True
+				else:
+					auth_setup = False
+				
 				context = {
+					"auth_setup": auth_setup,
 					"all_results": all_results[::-1],
 					"scan_type": type,
 					'colors': COLORS
@@ -468,7 +542,14 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 			scan_subdomain = len(get_results(get_files(type="subdomain-enum")))
 			scan_port = len(get_results(get_files(type="port-scan")))
 
+
+			if auth():
+				auth_setup = True
+			else:
+				auth_setup = False
+
 			context = {
+				"auth_setup": auth_setup,
 				"colors": COLORS,
 				"scan_all": scan_all,
 				"scan_subdomain": scan_subdomain,
@@ -479,29 +560,16 @@ def results(request, type=None, id=None, action=None, detailed_report=None):
 
 
 def subdomain(request):
-	context = {}
+
+	if auth():
+		auth_setup = True
+	else:
+		auth_setup = False
+	
+	context = {
+		"auth_setup": auth_setup,
+	}
 	return render(request, 'engine/subdomain_enum.html', context)
-
-
-def findSubdomains(request):
-	url = request.POST['url']
-
-	timestamp = int(datetime.timestamp(datetime.now()))
-	# print(timestamp)
-	# print(datetime.fromtimestamp(timestamp))
-	
-	file_name = f"\engine\static\scan_results\{timestamp}.{url}.subdomain"
-	with open(CWD + file_name, "w+") as f:
-		pass
-	
-	subdomains = sublist3r.main(url, 40, CWD + file_name, ports=None, silent=False, verbose=False, enable_bruteforce=False, engines=None)
-	# with open(CWD + file_name, "w+") as f:
-	# 	data = list(map(str, f.read().split()))
-	
-	all_results = get_results(get_files())
-	context = {"all_results": all_results[::-1]}
-
-	return render(request, 'engine/results.html', context)
 
 
 def portscan(request):
@@ -529,7 +597,15 @@ def portscan(request):
 
 		return render(request, 'engine/results.html')
 	
-	context = {}
+
+	if auth():
+		auth_setup = True
+	else:
+		auth_setup = False
+	
+	context = {
+		"auth_setup": auth_setup,
+	}
 	return render(request, 'engine/portscan.html', context)
 
 
@@ -552,15 +628,18 @@ def about(request):
 			
 
 	# Order of precedence is (Public, Private, Loopback, None)
+
+	if auth():
+		auth_setup = True
+	else:
+		auth_setup = False
+	
 	context = {
+		"auth_setup": auth_setup,
 		"colors": COLORS,
 		"ip_add": ip_add
 	}
 	return render(request, 'engine/about.html', context)
-
-
-def test(request):
-	return render(request, 'engine/test.html')
 
 
 def detailed_report(request, type=None, id=None, eyewitness=None, detailed_report=None,):
@@ -583,17 +662,18 @@ def detailed_report(request, type=None, id=None, eyewitness=None, detailed_repor
 
 
 def export_scan_results(request, scan_type=None, tool=None, id=None):
-	filepath = f"{CWD}\engine\static\scan_results\{id}*{tool}*{scan_type}"
+	filepath = f"{CWD}{SCAN_RESULTS}\{id}*{tool}*{scan_type}"
 	try:
 		file = glob.glob(filepath)[0]
 		return serve(request, os.path.basename(file), os.path.dirname(file))
+	
 	except:
 		print("Error Finding File")
 		return HttpResponse("Error Finding File")
 
 
 def raw_file(request, scan_type=None, tool=None, id=None):
-	filepath = f"{CWD}\engine\static\scan_results\{id}*{tool}*{scan_type}"
+	filepath = f"{CWD}{SCAN_RESULTS}\{id}*{tool}*{scan_type}"
 	try:
 		file = glob.glob(filepath)[0]
 		if scan_type == "subdomain-enum":
@@ -607,7 +687,24 @@ def raw_file(request, scan_type=None, tool=None, id=None):
 		return HttpResponse("Error Finding File")
 
 
-def settings(request):
+def settings(request, delete=None, type=None):
+
+	if delete:
+		files_path = CWD + SCAN_RESULTS
+		try:
+			onlyfiles = [f for f in listdir(files_path) if isfile(join(files_path, f))]
+		except:
+			onlyfiles = None
+		
+		if type == "subdomain-enum" or type == "port-scan":
+			all_results = get_results(get_files(type=type))
+		
+		elif type == "all":
+			all_results = get_results(get_files())
+		
+		else:
+			print("Invalid type")
+
 
 	if request.method == 'POST':
 		user_name = request.POST['user_name']
@@ -617,10 +714,73 @@ def settings(request):
 		
 		print(user_name)
 		print(password)
-		print(hashlib.sha256(password.encode()).hexdigest())
 		print(algorithm)
-		print(recovery_email)
+		encoded_pwd = password.encode()
+		# print(hashlib.sha256(password.encode()).hexdigest())
 
+		if algorithm == "sha256":
+			encrypted_pwd = hashlib.sha256(encoded_pwd).hexdigest()
+			print(f"sha256_encoded: {encrypted_pwd}")
+
+		elif algorithm == "sha512":
+			encrypted_pwd = hashlib.sha512(encoded_pwd).hexdigest()
+			print(f"sha512_encoded: {encrypted_pwd}")
+
+		elif algorithm == "sha3_256":
+			encrypted_pwd = hashlib.sha3_256(encoded_pwd).hexdigest()
+			print(f"sha3_256_encoded: {encrypted_pwd}")
+
+		elif algorithm == "sha3_512":
+			encrypted_pwd = hashlib.sha3_512(encoded_pwd).hexdigest()
+			print(f"sha3_512_encoded: {encrypted_pwd}")
+		
+		else:
+			encrypted_pwd = hashlib.md5(encoded_pwd).hexdigest()
+			print(f"md5_encoded: {encrypted_pwd}")
+		
+		print(recovery_email)
+		now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+
+		with open(AUTH_CONFIG_PATH, "r") as f:
+			data = f.read()
+
+		config_info = {
+			"bughunt3r": {
+				"config": {
+					"user_name": f"{user_name}",
+					"password": f"{encrypted_pwd}",
+					"algorithm": f"{algorithm}",
+					"recovery_email": f"{recovery_email}",
+					"created_on": f"{now}",
+					"updated_on": f"{now}"
+				}
+			}
+		}
+		# print(config_info)
+		# conf = json.loads(data)
+		# cred = conf['bughunt3r']['config']
+		# cred['user_name'] = f"{user_name}"
+		# cred['password'] = f"{encrypted_pwd}"
+		# cred['algorithm'] = f"{algorithm}"
+		# cred['recovery_email'] = f"{recovery_email}"
+		# cred['created_on'] = f"{now}"
+		# cred['updated_on'] = f"{now}"
+
+		print('---------------------------------------------------')
+		print(config_info)
+		try:
+			with open(AUTH_CONFIG_PATH, "w") as f:
+				f.write(json.dumps(config_info))
+		except Exception as e:
+			print(str(e))
+			return HttpResponse("Couldn't write to config file")
+
+		context = {
+			"": ""
+		}
+
+		return render(request, 'engine/home.html', context)
 	auth_setup = False
 	credentials = None
 
@@ -669,9 +829,23 @@ def readme(request):
 	return render(request, 'engine/show_readme.html', context)
 
 
+def not_found(request):
+	
+	if auth():
+		auth_setup = True
+	else:
+		auth_setup = False
+
+	context = {
+		"auth_setup": auth_setup,
+		"colors": COLORS,
+	}
+	return render(request, 'engine/not_found.html')
+
+
 def get_files(type=None) -> list:
 
-	files_path = os.getcwd() + "\engine\static\scan_results"
+	files_path = CWD + SCAN_RESULTS
 	# if type == "port-scan":
 	# 	print("type: port-scan")
 	# 	x = glob.glob(f"{files_path}\*.{type}")
@@ -699,7 +873,6 @@ def get_files(type=None) -> list:
 	# print(onlyfiles)
 	return onlyfiles
 
-
 """
 def get_files(type=None) -> list:
 
@@ -719,7 +892,6 @@ def get_files(type=None) -> list:
 	print(onlyfiles)
 	return onlyfiles
 """
-
 
 def get_results(only_files) -> list:
 	all_results = list()
@@ -745,3 +917,7 @@ def get_results(only_files) -> list:
 		all_results = []
 
 	return all_results
+
+
+def test(request):
+	return render(request, 'engine/test.html')

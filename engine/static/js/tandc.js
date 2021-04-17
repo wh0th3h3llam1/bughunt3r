@@ -1,16 +1,20 @@
-function termsAndConditions() {
+function termsAndConditions(auth) {
 	if (localStorage.getItem("terms_conditions") != "yeah") {
 		$('.ui.modal')
 		.modal({
 			closable: false,
 			onApprove : function() {
 				localStorage.setItem("terms_conditions", "yeah")
-				setupAuth();
+				if (auth != "setup") {
+					setupAuth();
+				}
 			}
 		}).modal('show');
 	}
 	else {
-		setupAuth();
+		if (auth != "setup") {
+			setupAuth();
+		}
 	}
 }
 

@@ -27,7 +27,7 @@
 				<h1 class="ui header center">All Results</h1>
 				<br>
 
-				<div class="ui three column grid">
+				<!-- <div class="ui three column grid">
 					<div class="column">
 						<a href="{% url 'results' 'all' %}">
 							<div class="ui raised {{ colors | random }} segment">
@@ -49,36 +49,62 @@
 							</div>
 						</a>
 					</div>
-				</div>
-				<br><br>
+				</div> -->
+
+				
 				<div class="ui raised blue segment">
-					<h2 class="ui huge header center">Statistics</h2>
-					<div class="ui three statistics">
-						<div class="statistic">
-							<div class="value">
-								{{ scan_all }}
+					<a href="{% url 'results' 'all' %}">
+						<div class="ui middle aligned selection animated list">
+							<div class="item">
+								<div class="right floated content">
+									<div class="ui blue horizontal label">
+										{{ scan_all }} Scans Performed
+									</div>
+								</div>
+								<div class="content">
+									<div class="header">
+										<h3>All Results</h3>
+									</div>
+								</div>
 							</div>
-							<div class="label">
-								Total Scans
+						</div>
+					</a>
+				</div>
+				<div class="ui raised yellow segment">
+					<a href="{% url 'results' 'subdomain-enum' %}">
+						<div class="ui middle aligned selection animated list">
+							<div class="item">
+								<div class="right floated content">
+									<div class="ui yellow horizontal label">
+										{{ scan_subdomain }} Scans Performed
+									</div>
+								</div>
+								<div class="content">
+									<div class="header">
+										<h3>Subdomain Enumeration</h3>
+									</div>
+								</div>
 							</div>
+						</div>
+					</a>
+				</div>
+				<div class="ui raised red segment">
+					<a href="{% url 'results' 'port-scan' %}">
+						<div class="ui middle aligned selection animated list">
+							<div class="item">
+								<div class="right floated content">
+									<div class="ui red horizontal label">
+										{{ scan_port }} Scans Performed
+									</div>
+								</div>
+								<div class="content">
+									<div class="header">
+										<h3>Port Scan</h3>
+									</div>
+								</div>
 							</div>
-							<div class="statistic">
-							<div class="value">
-								{{ scan_subdomain }}
-							</div>
-							<div class="label">
-								Subdomain Scans
-							</div>
-							</div>
-							<div class="statistic">
-							<div class="value">
-								{{ scan_port }}
-							</div>
-							<div class="label">
-								Port Scans
-							</div>
-							</div>
-					</div>
+						</div>
+					</a>
 				</div>
 			</main>
 		{% endblock %}	
