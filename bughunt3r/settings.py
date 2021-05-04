@@ -138,25 +138,33 @@ MEDIA_URL = "/media/"
 
 EYEWITNESS_URL = str(Path.home()) + "\\AppData\\Roaming\\"
 
-LOGGING = {
-	"loggers" = {
-		'version': 1,
-		'django': {
-			'handlers': {'file'},
-			'level': 'DEBUG'
-		}
-	},
-	"handlers" = {
-		'file': {
-			'level': 'DEBUG',
-			'class': 'logging.fileHandler',
-			'filename': './logs/debug.log',
-		}
-	},
-	"formatters" = {
-		'simpleRe': {
-			'format': '[{levelname}] {message}',
-			'style': '{',
-		},
-	},
-}
+# LOGGING = {
+# 	"loggers" = {
+# 		'version': 1,
+# 		'django': {
+# 			'handlers': {'file'},
+# 			'level': 'DEBUG'
+# 		}
+# 	},
+# 	"handlers" = {
+# 		'file': {
+# 			'level': 'DEBUG',
+# 			'class': 'logging.fileHandler',
+# 			'filename': './logs/debug.log',
+# 		}
+# 	},
+# 	"formatters" = {
+# 		'verbose': {
+#             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+#             'style': '{',
+#         },
+#         'simple': {
+#             'format': '{levelname} {message}',
+#             'style': '{',
+#         },
+# 		# 'simpleRe': {
+# 		# 	'format': '[{levelname}] {message}',
+# 		# 	'style': '{',
+# 		# },
+# 	},
+# }
